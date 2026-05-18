@@ -1,925 +1,522 @@
-<!DOCTYPE html>
-<html lang="en">
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,500&family=Inter:wght@300;400;500;600&family=Courier+New&display=swap"
+  rel="stylesheet">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alphin — Projects</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: #000000;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: #000000;
+    overflow-x: hidden;
+    /* ← only x, NOT overflow: hidden */
+  }
+
+  #projects-section {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    /* ← remove overflow: hidden entirely from here */
+  }
+
+  /* Root structural container cleanup - absolute edge removal */
+  #projects-section {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    min-height: 100vh;
+    width: 100vw;
+    background: #000000;
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    /* Forces total border annihilation */
+    box-sizing: border-box;
+  }
+
+  .projects-scroll-container {
+    padding: 140px 8% 140px 12%;
+    display: flex;
+    flex-direction: column;
+    gap: 160px;
+    z-index: 5;
+  }
+
+  .project-card {
+    position: relative;
+    max-width: 680px;
+    border: none !important;
+  }
+
+  /* Header Header Line - Typography Mix Matching Your Screenshot */
+  .header-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .project-track-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #4F8EFF;
+    border: 1px solid rgba(79, 142, 255, 0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .project-timeline {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.5px;
+  }
+
+  /* Elegant Serif & Crisp Sans-Serif Headline Matrix */
+  .project-card h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(28px, 3.4vw, 42px);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+    color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  /* The Premium Italic Highlight Variable Vibe */
+  .project-card h2 em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: #4F8EFF;
+    /* Soft neon highlight */
+    padding-right: 2px;
+  }
+
+  .project-summary {
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 36px;
+  }
+
+  .project-summary strong {
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  /* Clean Custom Hyphen List Rules */
+  .bullet-matrix {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bullet-matrix li {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.55);
+    padding-left: 24px;
+  }
+
+  .bullet-matrix li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: #4F8EFF;
+  }
+
+  .bullet-matrix strong {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Premium High-Contrast KPI Container Block */
+  .kpi-metric-panel {
+    background: rgba(79, 142, 255, 0.03);
+    border-left: 2px solid #4F8EFF;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .kpi-metric-panel p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .kpi-metric-panel p strong {
+    font-weight: 600;
+    color: #4F8EFF;
+  }
+
+  /* Technical Stack Capsule System */
+  .tech-pill-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tech-pill {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 2px;
+    /* Flat modern tech block layout */
+    transition: all 0.2s ease;
+  }
+
+  .tech-pill:hover {
+    color: #ffffff;
+    border-color: #4F8EFF;
+    background: rgba(79, 142, 255, 0.05);
+  }
+
+  /* Right Side Independent Space Portal */
+  .projects-canvas-sticky-frame {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    cursor: grab;
+    border: none !important;
+  }
+
+  .projects-canvas-sticky-frame:active {
+    cursor: grabbing;
+  }
+
+  #project-dna-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none !important;
+  }
+
+  @media (max-width: 1024px) {
+    #projects-section {
+      grid-template-columns: 1fr;
     }
 
-    :root {
-      --accent: #4F8EFF;
-      --accent-dim: rgba(79, 142, 255, 0.15);
-      --border: rgba(255, 255, 255, 0.07)
-    }
-
-    html,
-    body {
-      background: #000;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      height: 100%;
-      overflow: hidden
-    }
-
-    body {
-      cursor: none
-    }
-
-    /* CURSOR */
-    #cursor {
+    .projects-canvas-sticky-frame {
       position: fixed;
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width .2s, height .2s
-    }
-
-    #cursor-ring {
-      position: fixed;
-      width: 36px;
-      height: 36px;
-      border: 1.5px solid rgba(79, 142, 255, 0.5);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%)
-    }
-
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 7px 8px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 50px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    }
-
-    nav a {
-      color: rgba(255, 255, 255, 0.5);
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 8px 20px;
-      border-radius: 40px;
-      transition: color .2s, background .2s;
-      white-space: nowrap;
-    }
-
-    nav a:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.07)
-    }
-
-    nav a.active {
-      color: #fff;
-      background: rgba(79, 142, 255, 0.2);
-      border: 1px solid rgba(79, 142, 255, 0.4);
-      text-shadow: 0 0 12px rgba(79, 142, 255, 0.7);
-    }
-
-    /* LAYOUT */
-    #layout {
-      display: flex;
-      height: 100vh;
-      width: 100vw
-    }
-
-    /* LEFT — scrollable project list */
-    #left {
-      width: 52%;
-      height: 100%;
-      overflow-y: auto;
-      padding: 110px 56px 80px 64px;
-      position: relative;
-      z-index: 10;
-      scrollbar-width: none;
-    }
-
-    #left::-webkit-scrollbar {
-      display: none
-    }
-
-    /* Fade edge at bottom */
-    #left::after {
-      content: '';
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 52%;
-      height: 80px;
-      background: linear-gradient(to top, #000, transparent);
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    /* Section header */
-    .section-eyebrow {
-      font-size: 10px;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0.8;
-      margin-bottom: 10px
-    }
-
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(44px, 5vw, 64px);
-      letter-spacing: 4px;
-      line-height: 1;
-      margin-bottom: 6px
-    }
-
-    .section-sub {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.35);
-      letter-spacing: 1px;
-      margin-bottom: 52px
-    }
-
-    /* PROJECT CARD */
-    .project-card {
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 36px;
-      margin-bottom: 24px;
-      background: rgba(255, 255, 255, 0.02);
-      position: relative;
-      overflow: hidden;
-      transition: border-color .3s, background .3s;
-      cursor: default;
-    }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(79, 142, 255, 0.04), transparent 60%);
-      opacity: 0;
-      transition: opacity .3s;
+      z-index: 1;
+      opacity: 0.15;
     }
 
-    .project-card:hover {
-      border-color: rgba(79, 142, 255, 0.35);
-      background: rgba(79, 142, 255, 0.03)
-    }
-
-    .project-card:hover::before {
-      opacity: 1
-    }
-
-    /* Card number */
-    .card-number {
-      position: absolute;
-      top: 28px;
-      right: 32px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 64px;
-      color: rgba(79, 142, 255, 0.06);
-      letter-spacing: 4px;
-      line-height: 1;
-      user-select: none;
-    }
-
-    .project-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap
-    }
-
-    .project-tag {
-      font-size: 9px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      border: 1px solid rgba(79, 142, 255, 0.3);
-      color: var(--accent);
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: rgba(79, 142, 255, 0.08);
-    }
-
-    .project-date {
-      font-size: 10px;
-      color: rgba(255, 255, 255, 0.3);
-      letter-spacing: 2px
-    }
-
-    .project-badge {
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      background: rgba(79, 142, 255, 0.15);
-      color: rgba(255, 255, 255, 0.7);
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-left: auto;
-    }
-
-    .project-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(26px, 3vw, 36px);
-      letter-spacing: 3px;
-      line-height: 1.1;
-      margin-bottom: 14px;
-      color: #fff;
-    }
-
-    .project-title span {
-      color: var(--accent)
-    }
-
-    .project-desc {
-      font-size: 13px;
-      line-height: 1.85;
-      color: rgba(255, 255, 255, 0.58);
-      margin-bottom: 24px;
-      font-weight: 300;
-    }
-
-    .project-desc strong {
-      color: rgba(255, 255, 255, 0.85);
-      font-weight: 500
-    }
-
-    /* Bullet points */
-    .project-bullets {
-      list-style: none;
-      margin-bottom: 24px
-    }
-
-    .project-bullets li {
-      font-size: 12px;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.5);
-      padding: 5px 0 5px 18px;
+    .projects-scroll-container {
       position: relative;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      z-index: 2;
+      padding: 100px 24px;
+      gap: 120px;
     }
+  }
+</style>
 
-    .project-bullets li:last-child {
-      border-bottom: none
-    }
+<section id="projects-section">
 
-    .project-bullets li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 6px;
-      height: 1px;
-      background: var(--accent);
-      opacity: 0.7;
-    }
+  <div class="projects-scroll-container">
 
-    .project-bullets li strong {
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 500
-    }
-
-    /* Result highlight box */
-    .result-box {
-      background: rgba(79, 142, 255, 0.06);
-      border: 1px solid rgba(79, 142, 255, 0.2);
-      border-left: 3px solid var(--accent);
-      border-radius: 2px;
-      padding: 14px 18px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.75);
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-
-    .result-box span {
-      color: var(--accent);
-      font-weight: 600
-    }
-
-    /* Tech stack */
-    .tech-stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px
-    }
-
-    .tech-pill {
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.5);
-      padding: 5px 12px;
-      border-radius: 3px;
-      font-weight: 500;
-      transition: border-color .2s, color .2s;
-    }
-
-    .project-card:hover .tech-pill {
-      border-color: rgba(79, 142, 255, 0.2);
-      color: rgba(255, 255, 255, 0.65)
-    }
-
-    /* Stage pipeline (PulseGuard) */
-    .stages {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 24px
-    }
-
-    .stage {
-      padding: 12px 14px;
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 3px;
-      transition: border-color .2s;
-    }
-
-    .project-card:hover .stage {
-      border-color: rgba(79, 142, 255, 0.15)
-    }
-
-    .stage-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 3px;
-      margin-bottom: 4px
-    }
-
-    .stage-name {
-      font-size: 12px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 4px
-    }
-
-    .stage-desc {
-      font-size: 10px;
-      color: rgba(255, 255, 255, 0.38);
-      line-height: 1.5;
-      letter-spacing: 0.3px
-    }
-
-    /* RIGHT — fixed DNA canvas */
-    #right {
-      width: 48%;
-      height: 100%;
-      position: relative;
-      background: #000008;
-      border-left: 1px solid rgba(79, 142, 255, 0.08);
-    }
-
-    /* Canvas label */
-    #canvas-label {
-      position: absolute;
-      top: 110px;
-      left: 28px;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    #canvas-label h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 13px;
-      letter-spacing: 4px;
-      color: rgba(79, 142, 255, 0.7);
-      text-shadow: 0 0 10px rgba(79, 142, 255, 0.5);
-    }
-
-    #canvas-label p {
-      font-size: 9px;
-      color: rgba(255, 255, 255, 0.25);
-      letter-spacing: 2px;
-      margin-top: 4px
-    }
-
-    /* DNA controls — minimal, bottom right */
-    #dna-controls {
-      position: absolute;
-      bottom: 32px;
-      left: 28px;
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .ctrl {
-      display: flex;
-      align-items: center;
-      gap: 10px
-    }
-
-    .ctrl label {
-      color: rgba(79, 142, 255, 0.55);
-      font-size: 9px;
-      letter-spacing: 2px;
-      width: 90px;
-      text-transform: uppercase;
-      font-family: 'Courier New', monospace
-    }
-
-    .ctrl input[type=range] {
-      -webkit-appearance: none;
-      width: 100px;
-      height: 1px;
-      background: rgba(79, 142, 255, 0.2);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .ctrl input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 6px rgba(79, 142, 255, 0.8);
-    }
-
-    .ctrl .val {
-      color: rgba(79, 142, 255, 0.7);
-      font-size: 9px;
-      font-family: 'Courier New', monospace;
-      width: 30px;
-      text-align: right
-    }
-
-    #dna-canvas {
-      width: 100%;
-      height: 100%;
-      display: block
-    }
-
-    /* Particle count label */
-    #pc-label {
-      position: absolute;
-      top: 110px;
-      right: 24px;
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: rgba(79, 142, 255, 0.3);
-      font-family: 'Courier New', monospace;
-      z-index: 5;
-      pointer-events: none
-    }
-
-    @media(max-width:900px) {
-      #layout {
-        flex-direction: column
-      }
-
-      #left {
-        width: 100%;
-        height: 100vh;
-        padding: 100px 24px 80px
-      }
-
-      #left::after {
-        width: 100%
-      }
-
-      #right {
-        display: none
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
-  <nav>
-    <a href="alphin_portfolio.html">About</a>
-    <a href="#" class="active">Projects</a>
-    <a href="#">Experience</a>
-    <a href="#">Contact</a>
-  </nav>
-
-  <div id="layout">
-
-    <!-- ── LEFT: PROJECT CONTENT ─────────────────────────────────── -->
-    <div id="left">
-      <div class="section-eyebrow">Selected Work</div>
-      <div class="section-title">Projects</div>
-      <div class="section-sub">Things I've built that I'm proud of</div>
-
-      <!-- PROJECT 1 -->
-      <div class="project-card">
-        <div class="card-number">01</div>
-
-        <div class="project-meta">
-          <span class="project-tag">Machine Learning</span>
-          <span class="project-date">Jan 2026 – Mar 2026</span>
-          <span class="project-badge">⭐ Featured</span>
-        </div>
-
-        <div class="project-title">ML System for <span>Dysarthric</span> Speech</div>
-
-        <div class="project-desc">
-          Designed and developed an <strong>Automatic Speech Recognition (ASR) system</strong> that improves
-          intelligibility of dysarthric speech — making technology more accessible for speech-impaired users. Fine-tuned
-          OpenAI's Whisper Base model on the TORGO dysarthric speech dataset using parameter-efficient techniques.
-        </div>
-
-        <ul class="project-bullets">
-          <li>Fine-tuned <strong>Whisper Base</strong> using dysarthric speech audio from the TORGO dataset</li>
-          <li>Applied <strong>PEFT with LoRA</strong> architecture — only ~200,000 trainable parameters needed</li>
-          <li>Enabled accurate conversion of dysarthric speech to text, drastically improving accessibility</li>
-        </ul>
-
-        <div class="result-box">
-          🏆 &nbsp;<span>Outperformed OpenAI's Whisper Medium</span> — a significantly larger model — on dysarthric
-          audio transcription benchmarks, despite having far fewer parameters.
-        </div>
-
-        <div class="tech-stack">
-          <span class="tech-pill">PyTorch</span>
-          <span class="tech-pill">TensorFlow</span>
-          <span class="tech-pill">NumPy</span>
-          <span class="tech-pill">HuggingFace</span>
-          <span class="tech-pill">LoRA / PEFT</span>
-          <span class="tech-pill">Whisper</span>
-          <span class="tech-pill">TORGO Dataset</span>
-          <span class="tech-pill">React</span>
-        </div>
+    <article class="project-card">
+      <div class="header-meta-row">
+        <span class="project-track-meta">Machine Learning</span>
+        <span class="project-timeline">Jan — Mar 2026</span>
       </div>
 
-      <!-- PROJECT 2 -->
-      <div class="project-card">
-        <div class="card-number">02</div>
+      <h2>ML System for <em>Dysarthric</em> Speech</h2>
 
-        <div class="project-meta">
-          <span class="project-tag">Computer Vision</span>
-          <span class="project-tag">Security</span>
-          <span class="project-date">2025 – 2026</span>
-        </div>
+      <p class="project-summary">
+        Designed and developed an <strong>Automatic Speech Recognition (ASR) system</strong> that improves the
+        intelligibility of dysarthric speech — making technology more accessible for speech-impaired users. Fine-tuned
+        OpenAI's Whisper Base model on the TORGO dysarthric speech dataset using parameter-efficient techniques.
+      </p>
 
-        <div class="project-title">Pulse<span>Guard</span></div>
+      <ul class="bullet-matrix">
+        <li>Fine-tuned <strong>Whisper Base</strong> using dysarthric speech audio from the TORGO dataset</li>
+        <li>Applied <strong>PEFT with LoRA</strong> architecture — only ~200,000 trainable parameters needed</li>
+        <li>Enabled accurate conversion of dysarthric speech to text, drastically improving accessibility</li>
+      </ul>
 
-        <div class="project-desc">
-          A comprehensive, web-based <strong>identity verification and liveness detection system</strong> — a modern
-          e-KYC pipeline. Unlike traditional verification that merely asks "does this face match the ID?", PulseGuard
-          simulates a <strong>layered security checkpoint</strong> that defeats deepfakes, spoofing attacks, and
-          pre-recorded videos through a strict four-stage state machine.
-        </div>
-
-        <div class="stages">
-          <div class="stage">
-            <div class="stage-num">Stage 01</div>
-            <div class="stage-name">Identity Match</div>
-            <div class="stage-desc">Compares live webcam face against a 128-dim dlib face embedding stored in Supabase
-            </div>
-          </div>
-          <div class="stage">
-            <div class="stage-num">Stage 02</div>
-            <div class="stage-name">Passive Liveness</div>
-            <div class="stage-desc">Simulated rPPG — analyzes micro skin-color variations to verify a human heartbeat
-            </div>
-          </div>
-          <div class="stage">
-            <div class="stage-num">Stage 03</div>
-            <div class="stage-name">Cognitive Challenge</div>
-            <div class="stage-desc">Randomized finger-count challenge via MediaPipe Hands defeats pre-recorded video
-              attacks</div>
-          </div>
-          <div class="stage">
-            <div class="stage-num">Stage 04</div>
-            <div class="stage-name">Spatial Awareness</div>
-            <div class="stage-desc">3D PnP math tracks yaw/pitch — forces random head turns that real deepfakes can't
-              handle</div>
-          </div>
-        </div>
-
-        <div class="tech-stack">
-          <span class="tech-pill">Python</span>
-          <span class="tech-pill">Flask</span>
-          <span class="tech-pill">OpenCV</span>
-          <span class="tech-pill">MediaPipe</span>
-          <span class="tech-pill">face_recognition</span>
-          <span class="tech-pill">dlib</span>
-          <span class="tech-pill">Supabase</span>
-          <span class="tech-pill">PnP Math</span>
-        </div>
+      <div class="kpi-metric-panel">
+        <p>
+          <strong>Outperformed OpenAI's Whisper Medium</strong> — a significantly larger model — on dysarthric audio
+          transcription benchmarks, despite having far fewer parameters.
+        </p>
       </div>
 
-      <div style="height:40px"></div>
-    </div>
-
-    <!-- ── RIGHT: DNA ANIMATION ──────────────────────────────────── -->
-    <div id="right">
-      <div id="canvas-label">
-        <h2>Simulation</h2>
-        <p>Drag to rotate · Scroll to zoom</p>
+      <div class="tech-pill-grid">
+        <span class="tech-pill">PyTorch</span>
+        <span class="tech-pill">TensorFlow</span>
+        <span class="tech-pill">NumPy</span>
+        <span class="tech-pill">HuggingFace</span>
+        <span class="tech-pill">LoRA / PEFT</span>
+        <span class="tech-pill">Whisper</span>
+        <span class="tech-pill">TORGO Dataset</span>
+        <span class="tech-pill">React</span>
       </div>
-      <div id="pc-label">20 000 PARTICLES</div>
+    </article>
 
-      <canvas id="dna-canvas"></canvas>
-
-      <div id="dna-controls">
-        <div class="ctrl">
-          <label>Helix Twist</label>
-          <input type="range" id="s-twist" min="0.5" max="4.0" step="0.01" value="2.215">
-          <span class="val" id="v-twist">2.22</span>
-        </div>
-        <div class="ctrl">
-          <label>Radius</label>
-          <input type="range" id="s-radius" min="10" max="40" step="0.1" value="19.3">
-          <span class="val" id="v-radius">19.3</span>
-        </div>
-        <div class="ctrl">
-          <label>Flux</label>
-          <input type="range" id="s-flux" min="0.1" max="4.0" step="0.01" value="2.5">
-          <span class="val" id="v-flux">2.50</span>
-        </div>
-        <div class="ctrl">
-          <label>Zoom</label>
-          <input type="range" id="s-zoom" min="0.5" max="5.0" step="0.01" value="1.8">
-          <span class="val" id="v-zoom">1.80</span>
-        </div>
+    <article class="project-card">
+      <div class="header-meta-row">
+        <span class="project-track-meta">Cybersecurity</span>
+        <span class="project-timeline">System Prototype</span>
       </div>
-    </div>
 
-  </div><!-- end layout -->
+      <h2>PulseGuard: Identity <em>Verification</em> Pipeline</h2>
 
-  <!-- ── CURSOR ─────────────────────────────────────────────────────────────── -->
-  <script>
-    const cursor = document.getElementById('cursor');
-    const cursorRing = document.getElementById('cursor-ring');
-    let mx = -200, my = -200, rx = -200, ry = -200;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function tick() {
-      rx += (mx - rx) * .11; ry += (my - ry) * .11;
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-      cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
-      requestAnimationFrame(tick);
-    })();
-    document.querySelectorAll('a,.project-card').forEach(el => {
-      el.addEventListener('mouseenter', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; cursorRing.style.width = '52px'; cursorRing.style.height = '52px'; });
-      el.addEventListener('mouseleave', () => { cursor.style.width = '8px'; cursor.style.height = '8px'; cursorRing.style.width = '36px'; cursorRing.style.height = '36px'; });
+      <p class="project-summary">
+        Developed a zero-trust <strong>electronic Know Your Customer (e-KYC) onboarding pipeline</strong> engineered to
+        prevent remote verification fraud through deepfakes. Rather than standard face matching, PulseGuard utilizes a
+        multi-dimensional biometric validation architecture.
+      </p>
+
+      <ul class="bullet-matrix">
+        <li><strong>Identity Anchor:</strong> Compares active camera captures against high-dimensional facial embeddings
+          securely logged inside cloud databases.</li>
+        <li><strong>Passive Physiological Check:</strong> Tracks vascular micro-color pixel stability across facial
+          surfaces to verify human heartbeat presence via rPPG math.</li>
+        <li><strong>Cognitive Challenge Engine:</strong> Defeats recorded video inject attacks by prompting randomized
+          spatial finger count inputs classified via MediaPipe Hands.</li>
+        <li><strong>Spatial Awareness Metric:</strong> Maps 3D Perspective-n-Point orientations to force sudden head
+          angles, exposing synthetic occlusion deepfake artifacts.</li>
+      </ul>
+
+      <div class="tech-pill-grid">
+        <span class="tech-pill">Python</span>
+        <span class="tech-pill">Flask</span>
+        <span class="tech-pill">OpenCV</span>
+        <span class="tech-pill">MediaPipe</span>
+        <span class="tech-pill">dlib</span>
+        <span class="tech-pill">Supabase</span>
+        <span class="tech-pill">Computer Vision</span>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="projects-canvas-sticky-frame">
+    <canvas id="project-dna-canvas"></canvas>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+  (function initProjectSimulation() {
+    const canvas = document.getElementById('project-dna-canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    if (!gl) return;
+
+    const stickyFrame = document.querySelector('.projects-canvas-sticky-frame');
+    let W = stickyFrame.clientWidth, H = stickyFrame.clientHeight;
+    canvas.width = W; canvas.height = H;
+
+    window.addEventListener('resize', () => {
+      W = stickyFrame.clientWidth; H = stickyFrame.clientHeight;
+      canvas.width = W; canvas.height = H;
+      gl.viewport(0, 0, W, H);
+      projMatrix(proj, 60 * Math.PI / 180, W / H, 0.1, 2000);
     });
-  </script>
 
-  <!-- ── DNA WEBGL ──────────────────────────────────────────────────────────── -->
-  <script>
-    (function () {
-      const canvas = document.getElementById('dna-canvas');
-      const rightEl = document.getElementById('right');
+    const params = { twist: 2.215, radius: 19.3, flux: 4.0, zoom: 1.8 };
 
-      function setCanvasSize() {
-        canvas.width = rightEl.clientWidth;
-        canvas.height = rightEl.clientHeight;
+    const VS = `#version 300 es
+    precision highp float;
+    uniform mat4 uProj; uniform mat4 uView; uniform float uTime;
+    uniform float uTwist; uniform float uRadius; uniform float uFlux; uniform float uZoom;
+    in float aIndex; out vec3 vColor;
+    #define PI 3.14159265358979
+    void main() {
+      float COUNT = 20000.0; float norm = aIndex / COUNT; float t = uTime * 0.4 * uFlux;
+      float breakY = sin(t * 0.4) * 60.0; float breakRange = 12.0;
+      float px = 0.0, py = 0.0, pz = 0.0;
+      if (norm < 0.75) {
+        float side = (norm < 0.375) ? 1.0 : -1.0;
+        float localNorm = (norm < 0.375) ? norm / 0.375 : (norm - 0.375) / 0.375;
+        float v = (localNorm - 0.5) * 200.0; float angle = v * 0.1 * uTwist + t; float offset = (side > 0.0) ? 0.0 : PI;
+        float dy = v - breakY; float factor = min(1.0, (dy * dy) / 250.0); float currentR = uRadius * (0.95 + 0.05 * factor);
+        px = cos(angle + offset) * currentR; pz = sin(angle + offset) * currentR; py = v;
+        float jitter = (1.0 - factor) * 4.0; px += sin(aIndex * 0.5 + t * 8.0) * jitter; pz += cos(aIndex * 0.5 + t * 8.0) * jitter;
+        float hue = 0.6; float lightness = 0.3 + (1.0 - factor) * 0.4;
+        float r = clamp(abs(hue * 6.0 - 3.0) - 1.0, 0.0, 1.0); float g = clamp(2.0 - abs(hue * 6.0 - 2.0), 0.0, 1.0); float b = clamp(2.0 - abs(hue * 6.0 - 4.0), 0.0, 1.0);
+        vColor = mix(vec3(lightness), vec3(r, g, b), 0.8) * lightness * 2.0; vColor = clamp(vColor, 0.0, 1.0);
+      } else {
+        float localNorm = (norm - 0.75) / 0.25; float v = (localNorm - 0.5) * 200.0; float angle = v * 0.1 * uTwist + t; float lerpVal = sin(aIndex * 99.0) * 0.5 + 0.5; float r2 = uRadius * (lerpVal * 2.0 - 1.0);
+        float dy = abs(v - breakY); float isLocal = step(dy, breakRange); float isActive = step(0.4, sin(aIndex * 1.5));
+        px = cos(angle) * r2; pz = sin(angle) * r2; py = v; float trigger = isLocal * isActive;
+        px += sin(aIndex + t * 5.0) * 6.0 * trigger; pz += cos(aIndex + t * 5.0) * 6.0 * trigger;
+        float brightness = mix(0.25, 0.95, trigger); float saturation = mix(0.1, 0.0, trigger); float hue2 = 0.6;
+        float rr = clamp(abs(hue2 * 6.0 - 3.0) - 1.0, 0.0, 1.0); float gg = clamp(2.0 - abs(hue2 * 6.0 - 2.0), 0.0, 1.0); float bb = clamp(2.0 - abs(hue2 * 6.0 - 4.0), 0.0, 1.0);
+        vColor = mix(vec3(brightness), mix(vec3(rr,gg,bb)*brightness, vec3(brightness), trigger), 0.5); vColor = clamp(vColor, 0.0, 1.0);
       }
-      setCanvasSize();
-      window.addEventListener('resize', () => {
-        setCanvasSize();
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        projMatrix(proj, 60 * Math.PI / 180, canvas.width / canvas.height, 0.1, 2000);
-      });
-
-      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-      if (!gl) { console.warn('WebGL not supported'); return; }
-
-      const params = { twist: 2.215, radius: 19.3, flux: 2.5, zoom: 1.8 };
-      ['twist', 'radius', 'flux', 'zoom'].forEach(k => {
-        const sl = document.getElementById('s-' + k);
-        const vl = document.getElementById('v-' + k);
-        sl.addEventListener('input', () => { params[k] = parseFloat(sl.value); vl.textContent = params[k].toFixed(2); });
-      });
-
-      // ── Shaders (cosmic blue palette to match portfolio) ──────────
-      const VS = `#version 300 es
-  precision highp float;
-  uniform mat4 uProj,uView;
-  uniform float uTime,uTwist,uRadius,uFlux,uZoom;
-  in float aIndex;
-  out vec3 vColor;
-  #define PI 3.14159265358979
-  void main(){
-    float COUNT=20000.0;
-    float norm=aIndex/COUNT;
-    float t=uTime*0.4*uFlux;
-    float breakY=sin(t*0.4)*60.0;
-    float breakRange=12.0;
-    float px=0.,py=0.,pz=0.;
-    if(norm<0.75){
-      float side=(norm<0.375)?1.:-1.;
-      float localNorm=(norm<0.375)?norm/0.375:(norm-0.375)/0.375;
-      float v=(localNorm-0.5)*200.;
-      float angle=v*0.1*uTwist+t;
-      float offset=(side>0.)?0.:PI;
-      float dy=v-breakY;
-      float factor=min(1.,(dy*dy)/250.);
-      float currentR=uRadius*(0.95+0.05*factor);
-      px=cos(angle+offset)*currentR;
-      pz=sin(angle+offset)*currentR;
-      py=v;
-      float jitter=(1.-factor)*4.;
-      px+=sin(aIndex*0.5+t*8.)*jitter;
-      pz+=cos(aIndex*0.5+t*8.)*jitter;
-      // Cosmic blue hue (matches #4F8EFF → hue ~0.606)
-      float hue=0.606;
-      float lightness=0.3+(1.-factor)*0.42;
-      float r=clamp(abs(hue*6.-3.)-1.,0.,1.);
-      float g=clamp(2.-abs(hue*6.-2.),0.,1.);
-      float b=clamp(2.-abs(hue*6.-4.),0.,1.);
-      float sat=0.85;
-      vColor=mix(vec3(lightness),vec3(r,g,b),sat)*lightness*2.1;
-      vColor=clamp(vColor,0.,1.);
-    } else {
-      float localNorm=(norm-0.75)/0.25;
-      float v=(localNorm-0.5)*200.;
-      float angle=v*0.1*uTwist+t;
-      float lerpVal=sin(aIndex*99.)*0.5+0.5;
-      float r2=uRadius*(lerpVal*2.-1.);
-      float dy=abs(v-breakY);
-      float isLocal=step(dy,breakRange);
-      float isActive=step(0.4,sin(aIndex*1.5));
-      px=cos(angle)*r2; pz=sin(angle)*r2; py=v;
-      float trigger=isLocal*isActive;
-      px+=sin(aIndex+t*5.)*6.*trigger;
-      pz+=cos(aIndex+t*5.)*6.*trigger;
-      float brightness=mix(0.2,0.95,trigger);
-      float hue2=0.606;
-      float rr=clamp(abs(hue2*6.-3.)-1.,0.,1.);
-      float gg=clamp(2.-abs(hue2*6.-2.),0.,1.);
-      float bb=clamp(2.-abs(hue2*6.-4.),0.,1.);
-      vColor=mix(vec3(brightness),mix(vec3(rr,gg,bb)*brightness,vec3(brightness),trigger),0.5);
-      vColor=clamp(vColor,0.,1.);
+      vec3 pos = vec3(px, py, pz) * uZoom;
+      gl_Position = uProj * uView * vec4(pos, 1.0);
+      gl_PointSize = clamp(2.0 - length(pos) * 0.01, 0.5, 3.0);
     }
-    vec3 pos=vec3(px,py,pz)*uZoom;
-    gl_Position=uProj*uView*vec4(pos,1.);
-    gl_PointSize=clamp(2.-length(pos)*0.01,0.5,3.);
-  }`;
+    `;
 
-      const FS = `#version 300 es
-  precision mediump float;
-  in vec3 vColor;
-  out vec4 fragColor;
-  void main(){
-    vec2 uv=gl_PointCoord*2.-1.;
-    float d=dot(uv,uv);
-    if(d>1.) discard;
-    float alpha=(1.-d)*0.9+0.1;
-    vec3 c=vColor*(1.+(1.-d)*1.2);
-    fragColor=vec4(c,alpha);
-  }`;
+    const FS = `#version 300 es
+    precision mediump float; in vec3 vColor; out vec4 fragColor;
+    void main() {
+      vec2 uv = gl_PointCoord * 2.0 - 1.0; float d = dot(uv, uv); if (d > 1.0) discard;
+      float alpha = (1.0 - d) * 0.9 + 0.1; vec3 c = vColor * (1.0 + (1.0 - d) * 1.2);
+      fragColor = vec4(c, alpha);
+    }
+    `;
 
-      function compileShader(type, src) {
-        const s = gl.createShader(type);
-        gl.shaderSource(s, src); gl.compileShader(s);
-        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
-        return s;
-      }
-      const prog = gl.createProgram();
-      gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, VS));
-      gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FS));
-      gl.linkProgram(prog);
+    function compileShader(type, src) {
+      const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      return s;
+    }
 
-      const uLoc = {
-        proj: gl.getUniformLocation(prog, 'uProj'),
-        view: gl.getUniformLocation(prog, 'uView'),
-        time: gl.getUniformLocation(prog, 'uTime'),
-        twist: gl.getUniformLocation(prog, 'uTwist'),
-        radius: gl.getUniformLocation(prog, 'uRadius'),
-        flux: gl.getUniformLocation(prog, 'uFlux'),
-        zoom: gl.getUniformLocation(prog, 'uZoom'),
-      };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
 
-      const COUNT = 20000;
-      const indices = new Float32Array(COUNT);
-      for (let i = 0; i < COUNT; i++) indices[i] = i;
+    const uLoc = {
+      proj: gl.getUniformLocation(prog, 'uProj'), view: gl.getUniformLocation(prog, 'uView'),
+      time: gl.getUniformLocation(prog, 'uTime'), twist: gl.getUniformLocation(prog, 'uTwist'),
+      radius: gl.getUniformLocation(prog, 'uRadius'), flux: gl.getUniformLocation(prog, 'uFlux'),
+      zoom: gl.getUniformLocation(prog, 'uZoom'),
+    };
 
-      const vao = gl.createVertexArray ? gl.createVertexArray() : null;
+    const COUNT = 20000; const indices = new Float32Array(COUNT);
+    for (let i = 0; i < COUNT; i++) indices[i] = i;
+
+    const vao = gl.createVertexArray ? gl.createVertexArray() : null;
+    if (vao) gl.bindVertexArray(vao);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    const aIdx = gl.getAttribLocation(prog, 'aIndex');
+    gl.enableVertexAttribArray(aIdx); gl.vertexAttribPointer(aIdx, 1, gl.FLOAT, false, 0, 0);
+    if (vao) gl.bindVertexArray(null);
+
+    function projMatrix(out, fov, aspect, near, far) {
+      const f = 1.0 / Math.tan(fov / 2);
+      out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0; out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
+      out[8] = 0; out[9] = 0; out[10] = (far + near) / (near - far); out[11] = -1; out[12] = 0; out[13] = 0;
+      out[14] = (2 * far * near) / (near - far); out[15] = 0;
+      return out;
+    }
+
+    function lookAtMatrix(out, eye, center, up) {
+      const fx = center[0] - eye[0], fy = center[1] - eye[1], fz = center[2] - eye[2];
+      let fl = Math.sqrt(fx * fx + fy * fy + fz * fz); fl = fl < 1e-10 ? 1 : fl;
+      const nx = fx / fl, ny = fy / fl, nz = fz / fl;
+      const sx = ny * up[2] - nz * up[1], sy = nz * up[0] - nx * up[2], sz = nx * up[1] - ny * up[0];
+      let sl = Math.sqrt(sx * sx + sy * sy + sz * sz); if (sl < 1e-10) sl = 1;
+      const ux = sx / sl, uy = sy / sl, uz = sz / sl;
+      const ox = uy * nz - uz * ny, oy = uz * nx - ux * nz, oz = ux * ny - uy * nx;
+      out[0] = ux; out[1] = ox; out[2] = -nx; out[3] = 0; out[4] = uy; out[5] = oy; out[6] = -ny; out[7] = 0;
+      out[8] = uz; out[9] = oz; out[10] = -nz; out[11] = 0;
+      out[12] = -(ux * eye[0] + uy * eye[1] + uz * eye[2]); out[13] = -(ox * eye[0] + oy * eye[1] + oz * eye[2]); out[14] = (nx * eye[0] + ny * eye[1] + nz * eye[2]); out[15] = 1;
+      return out;
+    }
+
+    const proj = new Float32Array(16); const view = new Float32Array(16);
+    projMatrix(proj, 60 * Math.PI / 180, W / H, 0.1, 2000);
+
+    let camTheta = 0, camPhi = Math.PI / 3;
+    let isDragging = false, lastX = 0, lastY = 0;
+    let camDist = 220;
+
+    stickyFrame.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
+    window.addEventListener('mouseup', () => isDragging = false);
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      camTheta += (e.clientX - lastX) * 0.005;
+      camPhi -= (e.clientY - lastY) * 0.005;
+      camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi));
+      lastX = e.clientX; lastY = e.clientY;
+    });
+
+    stickyFrame.addEventListener('wheel', e => {
+      e.preventDefault();
+      camDist = Math.max(60, Math.min(450, camDist + e.deltaY * 0.25));
+    }, { passive: false });
+
+    stickyFrame.addEventListener('touchstart', e => { isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; });
+    window.addEventListener('touchend', () => isDragging = false);
+    window.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      camTheta += (e.touches[0].clientX - lastX) * 0.006;
+      camPhi -= (e.touches[0].clientY - lastY) * 0.006;
+      camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi));
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    });
+
+    const start = performance.now();
+
+    function frame() {
+      const t = (performance.now() - start) * 0.001;
+      let activeTheta = camTheta + (t * 0.03);
+
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+      gl.disable(gl.DEPTH_TEST);
+
+      const ex = camDist * Math.sin(camPhi) * Math.sin(activeTheta);
+      const ey = camDist * Math.cos(camPhi);
+      const ez = camDist * Math.sin(camPhi) * Math.cos(activeTheta);
+      lookAtMatrix(view, [ex, ey, ez], [0, 0, 0], [0, 1, 0]);
+
+      gl.useProgram(prog);
+      gl.uniformMatrix4fv(uLoc.proj, false, proj); gl.uniformMatrix4fv(uLoc.view, false, view);
+      gl.uniform1f(uLoc.time, t); gl.uniform1f(uLoc.twist, params.twist);
+      gl.uniform1f(uLoc.radius, params.radius); gl.uniform1f(uLoc.flux, params.flux);
+      gl.uniform1f(uLoc.zoom, params.zoom);
+
       if (vao) gl.bindVertexArray(vao);
-      const buf = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-      const aIdx = gl.getAttribLocation(prog, 'aIndex');
-      gl.enableVertexAttribArray(aIdx);
-      gl.vertexAttribPointer(aIdx, 1, gl.FLOAT, false, 0, 0);
+      else {
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.enableVertexAttribArray(aIdx); gl.vertexAttribPointer(aIdx, 1, gl.FLOAT, false, 0, 0);
+      }
+
+      gl.drawArrays(gl.POINTS, 0, COUNT);
       if (vao) gl.bindVertexArray(null);
 
-      function projMatrix(out, fov, aspect, near, far) {
-        const f = 1. / Math.tan(fov / 2);
-        out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
-        out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
-        out[8] = 0; out[9] = 0;
-        out[10] = (far + near) / (near - far); out[11] = -1;
-        out[12] = 0; out[13] = 0;
-        out[14] = (2 * far * near) / (near - far); out[15] = 0;
-        return out;
-      }
-      function lookAt(out, eye, center, up) {
-        const fx = center[0] - eye[0], fy = center[1] - eye[1], fz = center[2] - eye[2];
-        let fl = Math.sqrt(fx * fx + fy * fy + fz * fz) || 1;
-        const nx = fx / fl, ny = fy / fl, nz = fz / fl;
-        const sx = ny * up[2] - nz * up[1], sy = nz * up[0] - nx * up[2], sz = nx * up[1] - ny * up[0];
-        let sl = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
-        const ux = sx / sl, uy = sy / sl, uz = sz / sl;
-        const ox = uy * nz - uz * ny, oy = uz * nx - ux * nz, oz = ux * ny - uy * nx;
-        out[0] = ux; out[1] = ox; out[2] = -nx; out[3] = 0;
-        out[4] = uy; out[5] = oy; out[6] = -ny; out[7] = 0;
-        out[8] = uz; out[9] = oz; out[10] = -nz; out[11] = 0;
-        out[12] = -(ux * eye[0] + uy * eye[1] + uz * eye[2]);
-        out[13] = -(ox * eye[0] + oy * eye[1] + oz * eye[2]);
-        out[14] = (nx * eye[0] + ny * eye[1] + nz * eye[2]); out[15] = 1;
-        return out;
-      }
-
-      const proj = new Float32Array(16), view = new Float32Array(16);
-      projMatrix(proj, 60 * Math.PI / 180, canvas.width / canvas.height, 0.1, 2000);
-
-      // camera auto-orbit (no drag needed — it just slowly orbits)
-      let camTheta = 0.4, camPhi = Math.PI / 3.8;
-      let isDragging = false, lastX = 0, lastY = 0, camDist = 200;
-
-      canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
-      window.addEventListener('mouseup', () => isDragging = false);
-      canvas.addEventListener('mousemove', e => {
-        if (!isDragging) return;
-        camTheta += (e.clientX - lastX) * 0.005;
-        camPhi -= (e.clientY - lastY) * 0.005;
-        camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi));
-        lastX = e.clientX; lastY = e.clientY;
-      });
-      canvas.addEventListener('wheel', e => { camDist = Math.max(50, Math.min(500, camDist + e.deltaY * 0.3)); });
-      canvas.addEventListener('touchstart', e => { isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; });
-      canvas.addEventListener('touchend', () => isDragging = false);
-      canvas.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        camTheta += (e.touches[0].clientX - lastX) * 0.005;
-        camPhi -= (e.touches[0].clientY - lastY) * 0.005;
-        camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi));
-        lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-      });
-
-      const start = performance.now();
-      function frame() {
-        const t = (performance.now() - start) * 0.001;
-        // Auto-orbit when not dragging
-        if (!isDragging) camTheta += 0.0015;
-
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.clearColor(0., 0., 0.008, 1.);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-        gl.disable(gl.DEPTH_TEST);
-
-        const ex = camDist * Math.sin(camPhi) * Math.sin(camTheta);
-        const ey = camDist * Math.cos(camPhi);
-        const ez = camDist * Math.sin(camPhi) * Math.cos(camTheta);
-        lookAt(view, [ex, ey, ez], [0, 0, 0], [0, 1, 0]);
-
-        gl.useProgram(prog);
-        gl.uniformMatrix4fv(uLoc.proj, false, proj);
-        gl.uniformMatrix4fv(uLoc.view, false, view);
-        gl.uniform1f(uLoc.time, t);
-        gl.uniform1f(uLoc.twist, params.twist);
-        gl.uniform1f(uLoc.radius, params.radius);
-        gl.uniform1f(uLoc.flux, params.flux);
-        gl.uniform1f(uLoc.zoom, params.zoom);
-
-        if (vao) gl.bindVertexArray(vao);
-        else { gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(aIdx); gl.vertexAttribPointer(aIdx, 1, gl.FLOAT, false, 0, 0); }
-        gl.drawArrays(gl.POINTS, 0, COUNT);
-        if (vao) gl.bindVertexArray(null);
-        requestAnimationFrame(frame);
-      }
-      frame();
-    })();
-  </script>
-</body>
-
-</html>
+      requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+</script>
