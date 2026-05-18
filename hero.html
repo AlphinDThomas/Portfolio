@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alphin — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --accent: #4F8EFF
+    }
+
+    html,
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      height: 100%;
+      width: 100%
+    }
+
+    body {
+      cursor: none
+    }
+
+    #cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(79, 142, 255, 0.55);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%)
+    }
+
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0
+    }
+
+    /* CENTERED GLASSY NAV */
+    /* REVISED HIGH-TECH MINIMAL NAV */
+    nav {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      /* Single, crisp, ultra-faint cosmic blue border */
+      border: 1px solid rgba(79, 142, 255, 0.15);
+      border-radius: 100px;
+    }
+
+    nav a {
+      color: rgba(255, 255, 255, 0.45);
+      text-decoration: none;
+      font-size: 10px;
+      /* Slightly scaled down for elegance */
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 100px;
+      position: relative;
+      transition: color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      white-space: nowrap;
+    }
+
+    /* Smooth color transition instead of a solid pill background on hover */
+    nav a:hover {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* Clean, glowing dot indicator or soft text shadow for the active tab */
+    nav a.active {
+      color: #fff;
+      background: transparent;
+      /* Removed the heavy bounding box */
+      border: none;
+      text-shadow: 0 0 15px rgba(79, 142, 255, 0.85);
+    }
+
+    /* Optional: Elegant interactive dot underneath the active link */
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* HERO */
+    #hero {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .hero-greeting {
+      font-size: clamp(13px, 1.4vw, 17px);
+      font-weight: 400;
+      letter-spacing: 9px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 18px;
+      text-shadow: 0 0 28px rgba(79, 142, 255, 0.7), 0 0 60px rgba(79, 142, 255, 0.3);
+    }
+
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(80px, 14vw, 160px);
+      letter-spacing: 12px;
+      line-height: 0.9;
+      text-shadow: 0 0 80px rgba(79, 142, 255, 0.25);
+    }
+
+    .hero-name .hl {
+      color: var(--accent);
+      text-shadow: 0 0 40px rgba(79, 142, 255, 0.6)
+    }
+
+    .hero-role {
+      font-size: clamp(11px, 1.2vw, 15px);
+      font-weight: 300;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+    }
+
+    .hero-role .hl {
+      color: var(--accent);
+      font-weight: 500
+    }
+
+    .hero-tagline {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.28);
+      margin-top: 12px;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      margin-top: 42px;
+      pointer-events: all;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 38px;
+      cursor: pointer;
+      border-radius: 2px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 24px rgba(79, 142, 255, 0.4);
+      transition: transform .15s, box-shadow .2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(79, 142, 255, 0.6)
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 38px;
+      cursor: pointer;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: border-color .2s, color .2s, transform .15s;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(79, 142, 255, 0.6);
+      color: #fff;
+      transform: translateY(-2px)
+    }
+
+    .scroll-hint {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.3;
+      animation: bounce 2.2s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6))
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0)
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(8px)
+      }
+    }
+
+    @media(max-width:600px) {
+      nav {
+        gap: 2px;
+        padding: 6px 8px
+      }
+
+      nav a {
+        font-size: 10px;
+        padding: 7px 12px;
+        letter-spacing: 1px
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        align-items: center
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav>
+    <a href="#" class="active">About</a>
+    <a href="#">Projects</a>
+    <a href="#">Experience</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <div id="hero">
+    <div class="hero-greeting">Hi there, I am</div>
+    <div class="hero-name"><span>Al</span><span class="hl">phin</span></div>
+    <div class="hero-role"><span class="hl">Developer</span> &nbsp;·&nbsp; Designer &nbsp;·&nbsp; Creator</div>
+    <div class="hero-tagline">Building ideas that matter</div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Explore</span>
+    <div class="scroll-line"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    // ── CURSOR ───────────────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = -200, my = -200, rx = -200, ry = -200;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function tick() {
+      rx += (mx - rx) * .11; ry += (my - ry) * .11;
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(tick);
+    })();
+    document.querySelectorAll('a').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; ring.style.width = '52px'; ring.style.height = '52px'; });
+      el.addEventListener('mouseleave', () => { cursor.style.width = '8px'; cursor.style.height = '8px'; ring.style.width = '36px'; ring.style.height = '36px'; });
+    });
+
+    // ── THREE.JS ─────────────────────────────────────────────────
+    const canvas = document.getElementById('bg-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 1);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 5);
+    function onResize() { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+    onResize(); window.addEventListener('resize', onResize);
+
+    // cosmic blue: RGB normalised
+    const BLUE = [0.31, 0.557, 1.0];
+    const WHITE = [1, 1, 1];
+
+    // ── CENTRAL ORB — 9000 particles ─────────────────────────────
+    const ORB = 9000;
+    const oGeo = new THREE.BufferGeometry();
+    const oPos = new Float32Array(ORB * 3), oCol = new Float32Array(ORB * 3);
+    for (let i = 0; i < ORB; i++) {
+      const r = 1.9 * Math.pow(Math.random(), 0.38);
+      const th = Math.random() * Math.PI * 2, phi = Math.acos(2 * Math.random() - 1);
+      oPos[i * 3] = r * Math.sin(phi) * Math.cos(th) + (Math.random() - .5) * .5;
+      oPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(th) + (Math.random() - .5) * .5;
+      oPos[i * 3 + 2] = r * Math.cos(phi) + (Math.random() - .5) * .5;
+      const c = Math.random() < 0.55 ? WHITE : BLUE;
+      const b = 0.6 + Math.random() * 0.4;
+      oCol[i * 3] = c[0] * b; oCol[i * 3 + 1] = c[1] * b; oCol[i * 3 + 2] = c[2] * b;
+    }
+    oGeo.setAttribute('position', new THREE.BufferAttribute(oPos, 3));
+    oGeo.setAttribute('color', new THREE.BufferAttribute(oCol, 3));
+    const oMat = new THREE.PointsMaterial({ size: 0.013, vertexColors: true, transparent: true, opacity: 0.90 });
+    const oMesh = new THREE.Points(oGeo, oMat); scene.add(oMesh);
+
+    // ── AMBIENT DUST — 5000 ───────────────────────────────────────
+    const DUST = 5000;
+    const dGeo = new THREE.BufferGeometry();
+    const dPos = new Float32Array(DUST * 3), dCol = new Float32Array(DUST * 3);
+    for (let i = 0; i < DUST; i++) {
+      dPos[i * 3] = (Math.random() - .5) * 44;
+      dPos[i * 3 + 1] = (Math.random() - .5) * 26;
+      dPos[i * 3 + 2] = (Math.random() - .5) * 32;
+      const isBlue = Math.random() < 0.42;
+      const v = 0.4 + Math.random() * .6;
+      if (isBlue) { dCol[i * 3] = BLUE[0] * v; dCol[i * 3 + 1] = BLUE[1] * v; dCol[i * 3 + 2] = BLUE[2] * v; }
+      else { dCol[i * 3] = v; dCol[i * 3 + 1] = v; dCol[i * 3 + 2] = v; }
+    }
+    dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+    dGeo.setAttribute('color', new THREE.BufferAttribute(dCol, 3));
+    const dMat = new THREE.PointsMaterial({ size: 0.032, vertexColors: true, transparent: true, opacity: 0.72 });
+    const dMesh = new THREE.Points(dGeo, dMat); scene.add(dMesh);
+
+    // ── FOREGROUND CLOSE DUST — 1000 ─────────────────────────────
+    const FG = 1000;
+    const fGeo = new THREE.BufferGeometry();
+    const fPos = new Float32Array(FG * 3), fCol = new Float32Array(FG * 3);
+    for (let i = 0; i < FG; i++) {
+      fPos[i * 3] = (Math.random() - .5) * 14;
+      fPos[i * 3 + 1] = (Math.random() - .5) * 9;
+      fPos[i * 3 + 2] = 1 + Math.random() * 3.5;
+      const c = Math.random() < 0.5 ? WHITE : BLUE;
+      fCol[i * 3] = c[0]; fCol[i * 3 + 1] = c[1]; fCol[i * 3 + 2] = c[2];
+    }
+    fGeo.setAttribute('position', new THREE.BufferAttribute(fPos, 3));
+    fGeo.setAttribute('color', new THREE.BufferAttribute(fCol, 3));
+    const fMat = new THREE.PointsMaterial({ size: 0.055, vertexColors: true, transparent: true, opacity: 0.28 });
+    const fMesh = new THREE.Points(fGeo, fMat); scene.add(fMesh);
+
+    // ── ORBITAL RINGS ─────────────────────────────────────────────
+    function mkRing(r, thick, col, op, rx, ry, rz) {
+      const g = new THREE.TorusGeometry(r, thick, 4, 140);
+      const m = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, side: THREE.DoubleSide });
+      const mesh = new THREE.Mesh(g, m); mesh.rotation.set(rx, ry, rz); return mesh;
+    }
+    const ring1 = mkRing(2.25, 0.012, 0xffffff, 0.22, Math.PI / 4, 0.28, 0);
+    const ring2 = mkRing(3.00, 0.010, 0x4F8EFF, 0.30, Math.PI / 5, -0.52, 0.3);
+    const ring3 = mkRing(1.75, 0.008, 0xffffff, 0.15, Math.PI * .72, 0.82, 0.1);
+    const rings = new THREE.Group();
+    rings.add(ring1, ring2, ring3); scene.add(rings);
+
+    // ── MOUSE ─────────────────────────────────────────────────────
+    let mnx = 0, mny = 0;
+    document.addEventListener('mousemove', e => { mnx = (e.clientX / innerWidth - .5) * 2; mny = (e.clientY / innerHeight - .5) * 2; });
+
+    // ── RENDER LOOP ───────────────────────────────────────────────
+    function animate() {
+      requestAnimationFrame(animate);
+      oMesh.rotation.y += 0.0045; oMesh.rotation.x += 0.0018;
+      dMesh.rotation.y -= 0.0012; dMesh.rotation.x += 0.0004;
+      const dp = dGeo.attributes.position;
+      for (let i = 0; i < DUST; i += 3) { dp.array[i * 3 + 2] += 0.006; if (dp.array[i * 3 + 2] > 16) dp.array[i * 3 + 2] = -16; }
+      dp.needsUpdate = true;
+      const fp = fGeo.attributes.position;
+      for (let i = 0; i < FG; i++) { fp.array[i * 3 + 2] += 0.012; if (fp.array[i * 3 + 2] > 5.5) fp.array[i * 3 + 2] = -3.5; }
+      fp.needsUpdate = true;
+      ring1.rotation.z += 0.007; ring1.rotation.x += 0.0012;
+      ring2.rotation.z -= 0.005; ring2.rotation.y += 0.004;
+      ring3.rotation.z += 0.010; ring3.rotation.x -= 0.0025;
+      rings.rotation.y += 0.0008;
+      camera.position.x += (mnx * 0.45 - camera.position.x) * 0.04;
+      camera.position.y += (-mny * 0.22 - camera.position.y) * 0.04;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+
+</html>
