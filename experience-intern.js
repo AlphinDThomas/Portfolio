@@ -6,10 +6,22 @@
   resize(); window.addEventListener('resize', resize);
 
   let scrollFrac = 0, targetFrac = 0;
-  window.addEventListener('scroll', () => {
-    const ms = document.body.scrollHeight - window.innerHeight;
-    targetFrac = ms > 0 ? Math.min(1, window.scrollY / ms) : 0;
-  });
+  function updateScroll() {
+    const entries = document.querySelectorAll('.entry');
+    if (entries.length >= 2) {
+      const startY = entries[0].getBoundingClientRect().top + window.scrollY;
+      const endY = entries[1].getBoundingClientRect().top + window.scrollY;
+      const currentY = window.scrollY + window.innerHeight * 0.5;
+      if (endY > startY) {
+        targetFrac = Math.max(0, Math.min(1, (currentY - startY) / (endY - startY)));
+      }
+    } else {
+      const ms = document.body.scrollHeight - window.innerHeight;
+      targetFrac = ms > 0 ? Math.min(1, window.scrollY / ms) : 0;
+    }
+  }
+  window.addEventListener('scroll', updateScroll);
+  setTimeout(updateScroll, 100);
   function lerp(a, b, t) { return a + (b - a) * t; }
   function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
@@ -53,9 +65,9 @@
     const layoutCenter = W / 2;
 
     // Dynamically shift the cube completely outside the 920px text wrapper bounds
-    // State 0 (Top): Moves left into the visual vacuum space (-260px from center)
-    // State 1 (Bottom): Crosses over to the right visual vacuum space (+260px from center)
-    const cubeX = lerp(layoutCenter - 260, layoutCenter + 260, ef);
+    // State 0 (Top): Starts right in the visual vacuum space (+260px from center)
+    // State 1 (Bottom): Crosses over to the left visual vacuum space (-260px from center)
+    const cubeX = lerp(layoutCenter + 260, layoutCenter - 260, ef);
 
     // Vertical translation path tracking smooth scroll progression mapping down the layout frame
     const cubeY = lerp(H * 0.35, H * 0.58, ef) + Math.sin(t * .7) * 12;
@@ -113,13 +125,27 @@
     });
 
     // Dashed trajectory matrix lines mapping dynamically between visual margins
-    if (scrollFrac > .01) {
-      const sx = layoutCenter - 260, sy = H * 0.35;
-      const grad = ctx.createLinearGradient(sx, sy, cubeX, cubeY);
+    if (scrollFrac > .01 || scrollFrac < .99) {
+      const sx = layoutCenter + 260, sy = H * 0.35;
+      const ex = layoutCenter - 260, ey = H * 0.58;
+      
+      // Draw faint full track
+      ctx.beginPath(); ctx.setLineDash([4, 10]); 
+      ctx.moveTo(sx, sy); ctx.lineTo(ex, ey);
+      ctx.strokeStyle = 'rgba(79,142,255,0.06)'; 
+      ctx.lineWidth = 1; ctx.stroke(); 
+      
+      // Glowing segment following the cube
+      const grad = ctx.createLinearGradient(sx, sy, ex, ey);
       grad.addColorStop(0, 'rgba(79,142,255,0)');
-      grad.addColorStop(1, `rgba(79,142,255,${Math.min(.14, scrollFrac * 0.2).toFixed(3)})`);
-      ctx.beginPath(); ctx.setLineDash([4, 10]); ctx.moveTo(sx, sy); ctx.lineTo(cubeX, cubeY);
-      ctx.strokeStyle = grad; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
+      if (ef > 0.05) grad.addColorStop(Math.max(0.01, ef - 0.15), 'rgba(79,142,255,0)');
+      grad.addColorStop(ef, `rgba(79,142,255,${(Math.sin(scrollFrac * Math.PI) * 0.4).toFixed(3)})`);
+      if (ef < 0.95) grad.addColorStop(Math.min(0.99, ef + 0.15), 'rgba(79,142,255,0)');
+      grad.addColorStop(1, 'rgba(79,142,255,0)');
+      
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey);
+      ctx.strokeStyle = grad; ctx.stroke(); 
+      ctx.setLineDash([]);
     }
 
     requestAnimationFrame(frame);
