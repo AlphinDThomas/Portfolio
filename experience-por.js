@@ -1,13 +1,21 @@
 (function () {
   // ── Face data ──────────────────────────────────────────────────
   const FACES = [
-    { label: 'CTF Workshop Lead', event: 'CTF Workshop', org: 'Cybersecurity Club', date: 'Feb 2026', desc: 'Designed and executed a full-day capture-the-flag training event for 60+ participants across web exploitation, cryptography, and reverse engineering tracks.', color: '#030b1e', accent: '#4F8EFF', icon: '⚑' },
-    { label: 'Cybersecurity Club Lead', event: 'Club Leadership', org: 'College Tech Society', date: '2025–Present', desc: 'Founded and led the institution\'s cybersecurity chapter. Organized weekly workshops, inter-college CTF competitions, and industry speaker sessions.', color: '#031a0a', accent: '#00ff88', icon: '◈' },
-    { label: 'Hackathon Organizer', event: 'Annual Hackfest', org: 'Campus', date: 'Nov 2025', desc: 'Co-organized a 24-hour hackathon with 120+ participants. Managed logistics, judging criteria, and partnerships with three industry sponsors.', color: '#1a030a', accent: '#ff6b8a', icon: '◬' },
-    { label: 'Tech Talk Host', event: 'Tech Talk Series', org: 'Campus Tech Series', date: '2025', desc: 'Curated and hosted a speaker series bringing engineers from top companies. Coordinated AV, Q&A, and post-talk networking for 200+ attendees.', color: '#0d031a', accent: '#bf9eff', icon: '◎' },
-    { label: 'Workshop Facilitator', event: 'Dev Workshop', org: 'IEEE Chapter', date: 'Mar 2026', desc: 'Led a hands-on technical workshop on web security fundamentals. Participants built and exploited sample vulnerable applications in a sandboxed lab environment.', color: '#1a1403', accent: '#ffe066', icon: '◇' },
-    { label: 'Community Lead', event: 'Open Source Day', org: 'OSS Club', date: 'Jan 2026', desc: 'Organised the campus open-source contribution day, guiding 40+ students through their first pull requests on real-world projects across GitHub.', color: '#031a1a', accent: '#00e5ff', icon: '⬡' },
+    { label: 'Resource Person', event: 'CTF Workshop', org: 'IEEE CIS CARMEL', date: 'Feb 2026', desc: 'Designed and executed a full-day capture-the-flag training event for 60+ participants across web exploitation, cryptography, and reverse engineering tracks.', color: '#030b1e', accent: '#4F8EFF', icon: '⚑', imgSrc: 'Resourceperson.jpeg' },
+    { label: 'Cybersecurity Club Lead', event: 'Club Leadership', org: 'College Tech Society', date: '2025–Present', desc: 'Founded and led the institution\'s cybersecurity chapter. Organized weekly workshops, inter-college CTF competitions, and industry speaker sessions.', color: '#031a0a', accent: '#00ff88', icon: '◈', imgSrc: 'Ciccada.jpeg' },
+    { label: 'CTF Organizer', event: 'Annual Hackfest', org: 'Campus', date: 'Nov 2025', desc: 'Co-organized a 24-hour hackathon with 120+ participants. Managed logistics, judging criteria, and partnerships with three industry sponsors.', color: '#1a030a', accent: '#ff6b8a', icon: '◬', imgSrc: 'photo1 (3).jpeg' },
+    { label: 'Tech Talk Host', event: 'Tech Talk Series', org: 'Campus Tech Series', date: '2025', desc: 'Curated and hosted a speaker series bringing engineers from top companies. Coordinated AV, Q&A, and post-talk networking for 200+ attendees.', color: '#0d031a', accent: '#bf9eff', icon: '◎', imgSrc: 'photo1 (6).jpeg' },
+    { label: 'Operations Lead', event: 'Dev Workshop', org: 'Mulearn MGP', date: 'Mar 2026', desc: 'Led a hands-on technical workshop on web security fundamentals. Participants built and exploited sample vulnerable applications in a sandboxed lab environment.', color: '#1a1403', accent: '#ffe066', icon: '◇', imgSrc: 'https://picsum.photos/400/400?random=5' },
+    { label: 'Program Chair', event: 'Open Source Day', org: 'Open Souce Club', date: 'Jan 2026', desc: 'Organised the campus open-source contribution day, guiding 40+ students through their first pull requests on real-world projects across GitHub.', color: '#031a1a', accent: '#00e5ff', icon: '⬡', imgSrc: '1styear.jpeg' },
   ];
+
+  // Preload images
+  FACES.forEach(fd => {
+    if (fd.imgSrc) {
+      fd.img = new Image();
+      fd.img.src = fd.imgSrc;
+    }
+  });
 
   const canvas = document.getElementById('cube-canvas');
   const ctx = canvas.getContext('2d');
@@ -45,7 +53,7 @@
   // Combined these create a tumbling diagonal motion showing every face.
   let rotX = 0.4, rotY = 0.6, rotZ = 0.1;
   const VX = 0.0017, VY = 0.0029, VZ = 0.0006;
-  
+
   let isDragging = false;
   let lastDragX = 0, lastDragY = 0;
   let dragVX = VX, dragVY = VY;
@@ -118,49 +126,52 @@
     ctx.closePath();
     ctx.clip();
 
-    // Face fill
     const minX = Math.min(...pts.map(p => p.sx)), maxX = Math.max(...pts.map(p => p.sx));
     const minY = Math.min(...pts.map(p => p.sy)), maxY = Math.max(...pts.map(p => p.sy));
     const fw = maxX - minX, fh = maxY - minY;
+    
+    // Base color fill (Fallback if no image)
+    if (!fd.img || !fd.img.complete || fd.img.naturalWidth === 0) {
+      ctx.globalAlpha = Math.min(1, alpha * 1.1);
+      ctx.fillStyle = fd.color;
+      ctx.fillRect(minX - 2, minY - 2, fw + 4, fh + 4);
+    }
 
-    // Base color fill
-    ctx.globalAlpha = Math.min(1, alpha * 1.1);
-    ctx.fillStyle = fd.color;
-    ctx.fillRect(minX - 2, minY - 2, fw + 4, fh + 4);
-
-    // Subtle grid
-    ctx.globalAlpha = alpha * 0.12;
-    ctx.strokeStyle = fd.accent;
-    ctx.lineWidth = 0.5;
-    const gs = 28;
-    for (let gx = minX; gx < maxX; gx += gs) { ctx.beginPath(); ctx.moveTo(gx, minY); ctx.lineTo(gx, maxY); ctx.stroke(); }
-    for (let gy = minY; gy < maxY; gy += gs) { ctx.beginPath(); ctx.moveTo(minX, gy); ctx.lineTo(maxX, gy); ctx.stroke(); }
-
-    // Radial glow at center
-    ctx.globalAlpha = alpha * 0.2;
     const cxF = minX + fw / 2, cyF = minY + fh / 2;
-    const gr = ctx.createRadialGradient(cxF, cyF, 0, cxF, cyF, Math.max(fw, fh) * 0.7);
-    gr.addColorStop(0, fd.accent); gr.addColorStop(1, 'transparent');
-    ctx.fillStyle = gr; ctx.fillRect(minX, minY, fw, fh);
+
+    // Draw background image if loaded, mapping perfectly to the 3D perspective
+    if (fd.img && fd.img.complete && fd.img.naturalWidth > 0) {
+      ctx.save();
+      const imgW = fd.img.naturalWidth, imgH = fd.img.naturalHeight;
+      // Calculate affine transform mapping (0,0) to pts[0], (W,0) to pts[1], (0,H) to pts[3]
+      const e = pts[0].sx, f = pts[0].sy;
+      const a = (pts[1].sx - e) / imgW, b = (pts[1].sy - f) / imgW;
+      const c = (pts[3].sx - e) / imgH, d = (pts[3].sy - f) / imgH;
+      
+      // We use .transform() to append to the existing dpr scale
+      ctx.transform(a, b, c, d, e, f);
+      ctx.globalAlpha = alpha; // Full quality
+      ctx.drawImage(fd.img, 0, 0, imgW, imgH);
+      ctx.restore();
+    }
 
     // Hover tint
-    if (isHov) { ctx.globalAlpha = 0.15; ctx.fillStyle = '#fff'; ctx.fillRect(minX, minY, fw, fh); }
+    if (isHov) { ctx.globalAlpha = 0.15; ctx.fillStyle = '#fff'; ctx.fillRect(minX - 2, minY - 2, fw + 4, fh + 4); }
 
-    // Icon + label
+    // Label and Org with text shadow for readability over photos
     ctx.globalAlpha = alpha;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    // Icon
-    ctx.font = `${Math.max(18, fw * .2)}px sans-serif`;
-    ctx.fillStyle = fd.accent;
-    ctx.fillText(fd.icon, cxF, cyF - fw * .1);
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 6;
+    
     // Label
-    ctx.font = `500 ${Math.max(9, fw * .075)}px 'Inter',sans-serif`;
-    ctx.fillStyle = `rgba(255,255,255,${alpha * .9})`;
-    ctx.fillText(fd.label, cxF, cyF + fw * .12);
+    ctx.font = `600 ${Math.max(9, fw * .075)}px 'Inter',sans-serif`;
+    ctx.fillStyle = `rgba(255,255,255,${alpha * .95})`;
+    ctx.fillText(fd.label, cxF, cyF);
+    
     // Org
     ctx.font = `${Math.max(7, fw * .055)}px 'Courier Prime',monospace`;
-    ctx.fillStyle = `rgba(255,255,255,${alpha * .4})`;
     ctx.fillText(fd.org.toUpperCase(), cxF, cyF + fw * .22);
 
     ctx.restore();
@@ -182,16 +193,16 @@
   let mouseX = -999, mouseY = -999, crect = canvas.getBoundingClientRect();
   window.addEventListener('resize', () => { crect = canvas.getBoundingClientRect(); });
   window.addEventListener('scroll', () => { crect = canvas.getBoundingClientRect(); });
-  
+
   let hasDragged = false;
-  canvas.addEventListener('mousedown', e => { 
-    isDragging = true; hasDragged = false; 
-    lastDragX = e.clientX; lastDragY = e.clientY; 
+  canvas.addEventListener('mousedown', e => {
+    isDragging = true; hasDragged = false;
+    lastDragX = e.clientX; lastDragY = e.clientY;
   });
-  canvas.addEventListener('touchstart', e => { 
-    isDragging = true; hasDragged = false; 
-    lastDragX = e.touches[0].clientX; lastDragY = e.touches[0].clientY; 
-  }, {passive: true});
+  canvas.addEventListener('touchstart', e => {
+    isDragging = true; hasDragged = false;
+    lastDragX = e.touches[0].clientX; lastDragY = e.touches[0].clientY;
+  }, { passive: true });
   window.addEventListener('mouseup', () => { isDragging = false; });
   window.addEventListener('touchend', () => { isDragging = false; });
 
@@ -200,7 +211,7 @@
     const sx = DS / crect.width;
     mouseX = (e.clientX - crect.left) * sx;
     mouseY = (e.clientY - crect.top) * sx;
-    
+
     if (isDragging) {
       const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY;
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
@@ -218,10 +229,10 @@
       lastDragX = e.touches[0].clientX; lastDragY = e.touches[0].clientY;
       e.preventDefault();
     }
-  }, {passive: false});
-  canvas.addEventListener('mouseleave', () => { 
-    mouseX = -999; mouseY = -999; hovFace = -1; 
-    isDragging = false; 
+  }, { passive: false });
+  canvas.addEventListener('mouseleave', () => {
+    mouseX = -999; mouseY = -999; hovFace = -1;
+    isDragging = false;
   });
 
   function render(now) {
@@ -303,34 +314,46 @@
     const cw = mfCanvas.width, ch = mfCanvas.height;
     mfCtx.clearRect(0, 0, cw, ch);
     const fd = FACES[fi];
-    // Gradient background
-    const bg = mfCtx.createLinearGradient(0, 0, cw, ch);
-    bg.addColorStop(0, fd.color); bg.addColorStop(1, '#000');
-    mfCtx.fillStyle = bg; mfCtx.fillRect(0, 0, cw, ch);
-    // Grid
-    mfCtx.strokeStyle = `${fd.accent}22`; mfCtx.lineWidth = 1;
-    for (let x = 0; x < cw; x += 36) { mfCtx.beginPath(); mfCtx.moveTo(x, 0); mfCtx.lineTo(x, ch); mfCtx.stroke(); }
-    for (let y = 0; y < ch; y += 36) { mfCtx.beginPath(); mfCtx.moveTo(0, y); mfCtx.lineTo(cw, y); mfCtx.stroke(); }
-    // Radial glow
-    const rg = mfCtx.createRadialGradient(cw / 2, ch / 2, 0, cw / 2, ch / 2, ch * .7);
-    rg.addColorStop(0, fd.accent + '55'); rg.addColorStop(1, 'transparent');
-    mfCtx.fillStyle = rg; mfCtx.fillRect(0, 0, cw, ch);
+    
+    if (fd.img && fd.img.complete && fd.img.naturalWidth > 0) {
+      // Draw image to fill the canvas, covering it perfectly
+      const imgW = fd.img.naturalWidth, imgH = fd.img.naturalHeight;
+      const scale = Math.max(cw / imgW, ch / imgH);
+      const dw = imgW * scale, dh = imgH * scale;
+      const dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+      mfCtx.drawImage(fd.img, dx, dy, dw, dh);
+    } else {
+      // Gradient background fallback
+      const bg = mfCtx.createLinearGradient(0, 0, cw, ch);
+      bg.addColorStop(0, fd.color); bg.addColorStop(1, '#000');
+      mfCtx.fillStyle = bg; mfCtx.fillRect(0, 0, cw, ch);
+    }
+
+    // Shadow overlay for text readability
+    const textBg = mfCtx.createLinearGradient(0, ch * 0.5, 0, ch);
+    textBg.addColorStop(0, 'transparent');
+    textBg.addColorStop(1, 'rgba(0,0,0,0.8)');
+    mfCtx.fillStyle = textBg;
+    mfCtx.fillRect(0, 0, cw, ch);
+
     // Face number badge
-    mfCtx.fillStyle = `${fd.accent}33`;
+    mfCtx.fillStyle = `rgba(255,255,255,0.4)`;
     mfCtx.font = `bold ${ch * .55}px 'Courier Prime',monospace`;
     mfCtx.textAlign = 'right'; mfCtx.textBaseline = 'bottom';
     mfCtx.fillText(`0${fi + 1}`, cw - 20, ch - 10);
-    // Icon
-    mfCtx.font = `${ch * .3}px sans-serif`;
-    mfCtx.textAlign = 'center'; mfCtx.textBaseline = 'middle';
-    mfCtx.fillText(fd.icon, cw * .5, ch * .42);
+    
     // Label
+    mfCtx.textAlign = 'center'; mfCtx.textBaseline = 'middle';
     mfCtx.font = `600 ${Math.max(14, cw * .045)}px 'Inter',sans-serif`;
     mfCtx.fillStyle = 'rgba(255,255,255,0.95)';
+    mfCtx.shadowColor = 'rgba(0,0,0,0.8)'; mfCtx.shadowBlur = 4;
     mfCtx.fillText(fd.label, cw / 2, ch * .72);
+    
     mfCtx.font = `${Math.max(10, cw * .03)}px 'Courier Prime',monospace`;
-    mfCtx.fillStyle = fd.accent + 'cc';
+    mfCtx.fillStyle = 'rgba(255,255,255,0.7)';
     mfCtx.fillText(fd.org.toUpperCase(), cw / 2, ch * .84);
+    
+    mfCtx.shadowBlur = 0; // reset shadow
   }
 
   function openModal(fi) {
