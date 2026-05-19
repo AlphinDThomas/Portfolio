@@ -11,11 +11,11 @@
 
   const canvas = document.getElementById('cube-canvas');
   const ctx = canvas.getContext('2d');
-  let DS = 360; // draw size
+  let DS = 440; // draw size
 
   function resizeCube() {
     const dpr = window.devicePixelRatio || 1;
-    const w = Math.min(360, window.innerWidth - 48);
+    const w = Math.min(440, window.innerWidth - 48);
     canvas.style.width = w + 'px'; canvas.style.height = w + 'px';
     canvas.width = w * dpr; canvas.height = w * dpr;
     ctx.scale(dpr, dpr); DS = w;
@@ -23,7 +23,7 @@
   resizeCube(); window.addEventListener('resize', resizeCube);
 
   const S = 100; // half-side
-  const FOV = 460, ZDIST = 340;
+  const FOV = 2000, ZDIST = 2000;
 
   const VBASE = [[-S, -S, -S], [S, -S, -S], [S, S, -S], [-S, S, -S], [-S, -S, S], [S, -S, S], [S, S, S], [-S, S, S]];
   // face def: 4 vertex indices (winding order = counterclockwise when facing camera) + outward normal
@@ -44,7 +44,11 @@
   // rotY≈0.009 rad/frame at 60fps = ~1 rev / 12s
   // Combined these create a tumbling diagonal motion showing every face.
   let rotX = 0.4, rotY = 0.6, rotZ = 0.1;
-  const VX = 0.0052, VY = 0.0088, VZ = 0.0019;
+  const VX = 0.0017, VY = 0.0029, VZ = 0.0006;
+  
+  let isDragging = false;
+  let lastDragX = 0, lastDragY = 0;
+  let dragVX = VX, dragVY = VY;
 
   let hovFace = -1, frontFace = 0;
 
@@ -56,7 +60,7 @@
   }
   function prj2(p) {
     const [x, y, z] = p;
-    const sc = FOV / (FOV + z + ZDIST) * (DS / (S * 2.6));
+    const sc = FOV / (FOV + z + ZDIST) * (DS / (S * 1.9));
     return { sx: x * sc + DS / 2, sy: y * sc + DS / 2, z, s: sc };
   }
 
@@ -178,19 +182,60 @@
   let mouseX = -999, mouseY = -999, crect = canvas.getBoundingClientRect();
   window.addEventListener('resize', () => { crect = canvas.getBoundingClientRect(); });
   window.addEventListener('scroll', () => { crect = canvas.getBoundingClientRect(); });
+  
+  let hasDragged = false;
+  canvas.addEventListener('mousedown', e => { 
+    isDragging = true; hasDragged = false; 
+    lastDragX = e.clientX; lastDragY = e.clientY; 
+  });
+  canvas.addEventListener('touchstart', e => { 
+    isDragging = true; hasDragged = false; 
+    lastDragX = e.touches[0].clientX; lastDragY = e.touches[0].clientY; 
+  }, {passive: true});
+  window.addEventListener('mouseup', () => { isDragging = false; });
+  window.addEventListener('touchend', () => { isDragging = false; });
+
   canvas.addEventListener('mousemove', e => {
     crect = canvas.getBoundingClientRect();
     const sx = DS / crect.width;
     mouseX = (e.clientX - crect.left) * sx;
     mouseY = (e.clientY - crect.top) * sx;
+    
+    if (isDragging) {
+      const dx = e.clientX - lastDragX, dy = e.clientY - lastDragY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+      rotY += dx * 0.008; rotX += dy * 0.008;
+      dragVX = dy * 0.001; dragVY = dx * 0.001;
+      lastDragX = e.clientX; lastDragY = e.clientY;
+    }
   });
-  canvas.addEventListener('mouseleave', () => { mouseX = -999; mouseY = -999; hovFace = -1; canvas.style.cursor = 'default'; });
+  canvas.addEventListener('touchmove', e => {
+    if (isDragging) {
+      const dx = e.touches[0].clientX - lastDragX, dy = e.touches[0].clientY - lastDragY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+      rotY += dx * 0.008; rotX += dy * 0.008;
+      dragVX = dy * 0.001; dragVY = dx * 0.001;
+      lastDragX = e.touches[0].clientX; lastDragY = e.touches[0].clientY;
+      e.preventDefault();
+    }
+  }, {passive: false});
+  canvas.addEventListener('mouseleave', () => { 
+    mouseX = -999; mouseY = -999; hovFace = -1; 
+    isDragging = false; 
+  });
 
   function render(now) {
     const t = (now - START) * .001;
 
-    // ── FIX: Steady rotation — both X and Y at constant rates ──
-    rotX += VX; rotY += VY; rotZ += VZ;
+    // Apply drag momentum or auto-rotation
+    if (!isDragging) {
+      // Decay drag momentum back to base speed
+      dragVX += (VX - dragVX) * 0.05;
+      dragVY += (VY - dragVY) * 0.05;
+      rotX += dragVX;
+      rotY += dragVY;
+      rotZ += VZ;
+    }
 
     const rv = VBASE.map(v => rotPt(v, rotX, rotY, rotZ));
     const sorted = FDEFS.map((def, i) => ({
@@ -209,7 +254,10 @@
     // Hit-test for hover
     if (mouseX > 0) {
       hovFace = hitTest(mouseX, mouseY, rv);
-      canvas.style.cursor = hovFace >= 0 ? 'pointer' : 'default';
+      if (isDragging) canvas.style.cursor = 'grabbing';
+      else canvas.style.cursor = hovFace >= 0 ? 'pointer' : 'grab';
+    } else {
+      canvas.style.cursor = 'grab';
     }
 
     // Draw faces back→front, cull back-faces
@@ -302,6 +350,7 @@
   function navModal(d) { curModal = ((curModal + d) + 6) % 6; openModal(curModal); }
 
   canvas.addEventListener('click', e => {
+    if (hasDragged) return;
     crect = canvas.getBoundingClientRect();
     const sx = DS / crect.width;
     const ex = (e.clientX - crect.left) * sx, ey = (e.clientY - crect.top) * sx;
