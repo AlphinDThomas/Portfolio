@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alphin — Experience</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@1,400&family=Inter:wght@300;400;500;600&family=Courier+Prime:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --blue: #4F8EFF;
+      --green: #00ff88
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: #000;
+      color: #e2e2e2;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      cursor: none;
+      overflow-x: hidden
+    }
+
+    /* CURSOR */
+    #cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--blue);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(79, 142, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%)
+    }
+
+    /* FULL-SCREEN BACKGROUND CANVAS */
+    #cube-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5)
+    }
+
+    nav a {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 40px;
+      transition: color .2s, background .2s;
+      white-space: nowrap
+    }
+
+    nav a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.07)
+    }
+
+    nav a.active {
+      color: #fff;
+      background: rgba(79, 142, 255, 0.2);
+      border: 1px solid rgba(79, 142, 255, 0.4);
+      text-shadow: 0 0 12px rgba(79, 142, 255, 0.7)
+    }
+
+    /* MAIN CONTENT */
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 100px 24px 140px
+    }
+
+    header {
+      margin-bottom: 80px
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      padding: 3px 12px;
+      border: 1px solid rgba(79, 142, 255, 0.2);
+      background: rgba(79, 142, 255, 0.05);
+      border-radius: 2px;
+      margin-bottom: 16px
+    }
+
+    .main-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(38px, 5vw, 56px);
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px
+    }
+
+    .main-title em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--blue);
+      font-weight: 400
+    }
+
+    .main-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.3);
+      line-height: 1.75;
+      max-width: 480px
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, rgba(79, 142, 255, 0) 0%, rgba(79, 142, 255, 0.25) 8%, rgba(0, 255, 136, 0.18) 92%, rgba(79, 142, 255, 0) 100%)
+    }
+
+    .entry {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: calc(50% + 32px);
+      margin-bottom: 80px;
+      min-height: 280px
+    }
+
+    .entry:nth-child(even) {
+      justify-content: flex-start;
+      padding-right: 0;
+      padding-left: calc(50% + 32px)
+    }
+
+    .entry:last-child {
+      margin-bottom: 0
+    }
+
+    /* Timeline dot */
+    .entry::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 28px;
+      transform: translateX(-50%);
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 16px var(--blue);
+      z-index: 2;
+      transition: transform .3s
+    }
+
+    .entry:nth-child(even)::after {
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green)
+    }
+
+    .entry:hover::after {
+      transform: translateX(-50%) scale(1.5)
+    }
+
+    /* DATE label — floats in the FREE space opposite the card */
+    .entry-date {
+      position: absolute;
+      top: 24px;
+      right: calc(50% + 52px);
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(79, 142, 255, 0.5);
+      text-align: right;
+      white-space: nowrap;
+      transition: opacity .3s
+    }
+
+    .entry:nth-child(even) .entry-date {
+      right: auto;
+      left: calc(50% + 52px);
+      text-align: left;
+      color: rgba(0, 255, 136, 0.45)
+    }
+
+    .entry:hover .entry-date {
+      opacity: 1;
+      color: rgba(79, 142, 255, 0.85)
+    }
+
+    .entry:nth-child(even):hover .entry-date {
+      color: rgba(0, 255, 136, 0.85)
+    }
+
+    /* Glass card */
+    .glass-card {
+      width: 100%;
+      padding: 30px 28px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.018);
+      backdrop-filter: blur(16px);
+      transition: border-color .35s, background .35s, transform .4s cubic-bezier(0.16, 1, 0.3, 1)
+    }
+
+    .glass-card:hover {
+      border-color: rgba(79, 142, 255, 0.22);
+      background: rgba(79, 142, 255, 0.03);
+      transform: translateX(-6px)
+    }
+
+    .entry:nth-child(even) .glass-card:hover {
+      transform: translateX(6px)
+    }
+
+    .role-title {
+      font-size: 19px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 4px
+    }
+
+    .role-focus {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+      margin-bottom: 3px
+    }
+
+    .role-org {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.18);
+      text-transform: uppercase;
+      margin-bottom: 18px
+    }
+
+    .role-desc {
+      font-size: 13px;
+      line-height: 1.85;
+      color: rgba(255, 255, 255, 0.48);
+      font-weight: 300;
+      margin-bottom: 18px
+    }
+
+    .role-desc strong {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 18px
+    }
+
+    .tag {
+      font-family: 'Courier Prime', monospace;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      transition: border-color .2s, color .2s
+    }
+
+    .glass-card:hover .tag {
+      border-color: rgba(79, 142, 255, 0.2);
+      color: rgba(255, 255, 255, 0.5)
+    }
+
+    .metrics {
+      display: grid;
+      gap: 7px
+    }
+
+    .metric {
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.01);
+      border-left: 2px solid var(--blue)
+    }
+
+    .metric.g {
+      border-left-color: var(--green)
+    }
+
+    .metric-val {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      color: #fff;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .metric-desc {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.28);
+      line-height: 1.5
+    }
+
+    ::-webkit-scrollbar {
+      width: 3px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #000
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--blue)
+    }
+
+    @media(max-width:700px) {
+      .timeline::before {
+        left: 20px
+      }
+
+      .entry,
+      .entry:nth-child(even) {
+        justify-content: flex-start;
+        padding-right: 0;
+        padding-left: 48px
+      }
+
+      .entry::after,
+      .entry:nth-child(even)::after {
+        left: 20px
+      }
+
+      .entry-date,
+      .entry:nth-child(even) .entry-date {
+        position: static;
+        text-align: left;
+        margin-bottom: 10px;
+        right: auto;
+        left: auto
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <canvas id="cube-canvas"></canvas>
+
+  <nav>
+    <a href="alphin_portfolio.html">About</a>
+    <a href="alphin_projects.html">Projects</a>
+    <a href="#" class="active">Experience</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <main>
+    <header>
+      <div class="eyebrow">Trajectory Log</div>
+      <h2 class="main-title">Technical <em>Experience</em></h2>
+      <p class="main-sub">A chronological audit of engineering contributions — backend systems, security architecture,
+        and acoustic machine learning.</p>
+    </header>
+
+    <div class="timeline">
+
+      <!-- ENTRY 1 — card on RIGHT, cube starts in LEFT free space -->
+      <div class="entry">
+        <div class="entry-date">June 2025 — Dec 2025</div>
+        <div class="glass-card">
+          <div class="role-title">Software Engineer Intern</div>
+          <div class="role-focus">// Backend &amp; Security Focus</div>
+          <div class="role-org">Enterprise Logistics Labs</div>
+          <p class="role-desc">Engineered scalable <strong>RESTful API environments</strong> and optimized distributed
+            transaction architectures. Structured robust defensive layers by introducing advanced access control vectors
+            and hardening endpoints against common <strong>OWASP structural threat patterns</strong>.</p>
+          <div class="tags">
+            <span class="tag">Python</span><span class="tag">Django</span><span class="tag">FastAPI</span><span
+              class="tag">PostgreSQL</span><span class="tag">Kafka</span><span class="tag">Docker</span>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-val">↑ 30% API Processing Speed</div>
+              <div class="metric-desc">Query optimization &amp; Kafka asynchronous integration streams.</div>
+            </div>
+            <div class="metric g">
+              <div class="metric-val">↓ 40% Code Integration Cycles</div>
+              <div class="metric-desc">Automated structural backend container deployment architectures.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENTRY 2 — card on LEFT, cube moves to RIGHT free space -->
+      <div class="entry">
+        <div class="entry-date">Jan 2026 — April 2026</div>
+        <div class="glass-card">
+          <div class="role-title">Machine Learning Intern</div>
+          <div class="role-focus">// ASR &amp; Audio Engineering</div>
+          <div class="role-org">Technical Research Group</div>
+          <p class="role-desc">Configured end-to-end <strong>signal processing pipelines</strong> and engineered MLOps
+            automation loops, specializing in adapting foundational acoustic models for highly distorted or specialized
+            vocal training datasets.</p>
+          <div class="tags">
+            <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Audio Proc</span><span
+              class="tag">ASR Modeling</span><span class="tag">MLOps</span><span class="tag">HuggingFace</span>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-val">Noise Filtration Manifest</div>
+              <div class="metric-desc">Engineered complex automated rPPG/rASD acoustic filtration arrays.</div>
+            </div>
+            <div class="metric g">
+              <div class="metric-val">+15% Transcription Metric Accuracy</div>
+              <div class="metric-desc">Optimized Whisper acoustic parameters on degraded vocal inputs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--
+      TO ADD MORE ENTRIES — just paste below and alternate:
+      Odd entries (1st, 3rd, 5th…) → card on RIGHT, free space on LEFT
+      Even entries (2nd, 4th, 6th…) → card on LEFT, free space on RIGHT
+      The cube trajectory auto-extends to fill each new free zone.
+
+      <div class="entry">
+        <div class="entry-date">Month YYYY — Month YYYY</div>
+        <div class="glass-card">
+          <div class="role-title">Your Title</div>
+          <div class="role-focus">// Focus Area</div>
+          <div class="role-org">Company</div>
+          <p class="role-desc">Description. <strong>Key points</strong> highlighted.</p>
+          <div class="tags"><span class="tag">Tech</span></div>
+          <div class="metrics">
+            <div class="metric"><div class="metric-val">Achievement</div><div class="metric-desc">Context.</div></div>
+          </div>
+        </div>
+      </div>
+    -->
+
+    </div>
+  </main>
+
+  <!-- CURSOR -->
+  <script>
+    const cur = document.getElementById('cursor'), cring = document.getElementById('cursor-ring');
+    let mx = -200, my = -200, rx = -200, ry = -200;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function t() { rx += (mx - rx) * .11; ry += (my - ry) * .11; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; cring.style.left = rx + 'px'; cring.style.top = ry + 'px'; requestAnimationFrame(t); })();
+    document.querySelectorAll('a,.glass-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.style.width = '14px'; cur.style.height = '14px'; cring.style.width = '52px'; cring.style.height = '52px'; });
+      el.addEventListener('mouseleave', () => { cur.style.width = '8px'; cur.style.height = '8px'; cring.style.width = '36px'; cring.style.height = '36px'; });
+    });
+  </script>
+
+  <!-- FLOATING CUBE ANIMATION -->
+  <script>
+    (function () {
+      const canvas = document.getElementById('cube-canvas');
+      const ctx = canvas.getContext('2d');
+      let W = window.innerWidth, H = window.innerHeight;
+
+      function resize() { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; }
+      resize(); window.addEventListener('resize', resize);
+
+      // ── Scroll tracking ───────────────────────────────────────────
+      // scrollFrac: 0 (top) → 1 (bottom)
+      let scrollFrac = 0;
+      let targetFrac = 0;
+      window.addEventListener('scroll', () => {
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+        targetFrac = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+      });
+
+      // ── Smooth ease helper ────────────────────────────────────────
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+      // ── Cube geometry ─────────────────────────────────────────────
+      // 8 vertices of a unit cube (±1)
+      const BASE_VERTS = [
+        [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+        [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
+      ];
+      // 12 edges
+      const EDGES = [
+        [0, 1], [1, 2], [2, 3], [3, 0], // back face
+        [4, 5], [5, 6], [6, 7], [7, 4], // front face
+        [0, 4], [1, 5], [2, 6], [3, 7]  // connectors
+      ];
+      // 6 faces (for faint fill)
+      const FACES = [
+        [0, 1, 2, 3], [4, 5, 6, 7], // back, front
+        [0, 4, 7, 3], [1, 5, 6, 2], // left, right
+        [0, 1, 5, 4], [3, 2, 6, 7]  // bottom, top
+      ];
+
+      // ── Rotation helper ───────────────────────────────────────────
+      function rotateVert(v, rx, ry, rz) {
+        let [x, y, z] = v;
+        // X rotation
+        let y1 = y * Math.cos(rx) - z * Math.sin(rx);
+        let z1 = y * Math.sin(rx) + z * Math.cos(rx);
+        y = y1; z = z1;
+        // Y rotation
+        let x2 = x * Math.cos(ry) + z * Math.sin(ry);
+        let z2 = -x * Math.sin(ry) + z * Math.cos(ry);
+        x = x2; z = z2;
+        // Z rotation
+        let x3 = x * Math.cos(rz) - y * Math.sin(rz);
+        let y3 = x * Math.sin(rz) + y * Math.cos(rz);
+        return [x3, y3, z];
+      }
+
+      function project(x, y, z, cx, cy, size) {
+        const fov = 380;
+        const dist = 200;
+        const s = fov / (fov + z + dist);
+        return { px: x * s * size + cx, py: y * s * size + cy, z, s };
+      }
+
+      // ── Ambient particles orbiting the cube ───────────────────────
+      const PARTS = Array.from({ length: 30 }, () => ({
+        theta: Math.random() * Math.PI * 2,
+        phi: Math.random() * Math.PI,
+        r: 90 + Math.random() * 60,
+        speed: (0.2 + Math.random() * 0.4) * (Math.random() < 0.5 ? 1 : -1),
+        size: 0.8 + Math.random() * 1.4,
+        phase: Math.random() * Math.PI * 2
+      }));
+
+      // ── Main draw ─────────────────────────────────────────────────
+      const START = performance.now();
+
+      function frame(now) {
+        const t = (now - START) * 0.001;
+
+        // Smooth scroll fraction
+        scrollFrac += (targetFrac - scrollFrac) * 0.055;
+        const ef = easeInOut(scrollFrac);
+
+        // Cube world position:
+        // Start: upper-left free space (~22% from left, ~42% from top)
+        // End:   lower-right free space (~78% from left, ~62% from top)
+        const cubeX = lerp(W * 0.22, W * 0.78, ef);
+        const cubeY = lerp(H * 0.42, H * 0.58, ef)
+          + Math.sin(t * 0.7) * 14; // gentle float
+
+        // Rotation — speeds up slightly mid-scroll
+        const rotSpeed = 1 + scrollFrac * 0.6;
+        const rx = t * 0.35 * rotSpeed;
+        const ry = t * 0.55 * rotSpeed;
+        const rz = t * 0.15;
+
+        const SIZE = 58; // half-size of cube in px
+
+        // Project all vertices
+        const verts = BASE_VERTS.map(v => {
+          const [x, y, z] = rotateVert(v, rx, ry, rz);
+          return project(x, y, z, cubeX, cubeY, SIZE);
+        });
+
+        // Sort faces by avg Z (painter's algorithm)
+        const sortedFaces = FACES.map((f, i) => ({
+          i, avgZ: f.reduce((s, vi) => s + verts[vi].z, 0) / 4
+        })).sort((a, b) => a.avgZ - b.avgZ);
+
+        ctx.clearRect(0, 0, W, H);
+
+        // ── Draw ambient particle dust ──
+        PARTS.forEach(p => {
+          const th = p.theta + t * p.speed;
+          const x = Math.sin(p.phi) * Math.cos(th) * p.r + cubeX;
+          const y = Math.sin(p.phi) * Math.sin(th) * p.r + cubeY;
+          const a = 0.12 + Math.sin(t * 1.2 + p.phase) * 0.08;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(79,142,255,${a.toFixed(3)})`;
+          ctx.fill();
+        });
+
+        // ── Draw faint face fills (back to front) ──
+        sortedFaces.forEach(({ i }) => {
+          const f = FACES[i];
+          const depthA = Math.max(0, (sortedFaces.findIndex(x => x.i === i) / FACES.length) * 0.045);
+          ctx.beginPath();
+          ctx.moveTo(verts[f[0]].px, verts[f[0]].py);
+          f.slice(1).forEach(vi => ctx.lineTo(verts[vi].px, verts[vi].py));
+          ctx.closePath();
+          ctx.fillStyle = `rgba(79,142,255,${depthA.toFixed(4)})`;
+          ctx.fill();
+        });
+
+        // ── Draw glowing edges ──
+        EDGES.forEach(([a, b]) => {
+          const va = verts[a], vb = verts[b];
+          const midZ = (va.z + vb.z) * 0.5;
+          const depthBrightness = Math.max(0.15, Math.min(0.9, (midZ + SIZE * 1.2) / (SIZE * 2.4)));
+
+          // Glow layers — outer to inner
+          [[6, 0.06], [3.5, 0.14], [1.8, 0.35], [0.8, 0.75]].forEach(([lw, la]) => {
+            ctx.beginPath();
+            ctx.moveTo(va.px, va.py);
+            ctx.lineTo(vb.px, vb.py);
+            ctx.strokeStyle = `rgba(79,142,255,${(la * depthBrightness).toFixed(3)})`;
+            ctx.lineWidth = lw;
+            ctx.stroke();
+          });
+          // Bright core edge
+          ctx.beginPath();
+          ctx.moveTo(va.px, va.py); ctx.lineTo(vb.px, vb.py);
+          ctx.strokeStyle = `rgba(180,210,255,${(0.5 * depthBrightness).toFixed(3)})`;
+          ctx.lineWidth = 0.4; ctx.stroke();
+        });
+
+        // ── Draw vertex nodes ──
+        verts.forEach(v => {
+          const r = Math.max(1, 3 * v.s);
+          const pulse = 0.7 + Math.sin(t * 2.2 + v.z) * 0.3;
+          // Outer glow
+          const g = ctx.createRadialGradient(v.px, v.py, 0, v.px, v.py, r * 5);
+          g.addColorStop(0, `rgba(79,142,255,${(0.55 * pulse).toFixed(2)})`);
+          g.addColorStop(0.4, `rgba(79,142,255,${(0.15 * pulse).toFixed(2)})`);
+          g.addColorStop(1, 'rgba(79,142,255,0)');
+          ctx.beginPath(); ctx.arc(v.px, v.py, r * 5, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+          // Core dot
+          ctx.beginPath(); ctx.arc(v.px, v.py, r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(210,228,255,${(0.9 * pulse).toFixed(2)})`; ctx.fill();
+        });
+
+        // ── Trail line showing cube's journey path ──
+        // Faint dashed line from start position to current position
+        const sx = W * 0.22, sy = H * 0.42;
+        const ex = W * 0.78, ey = H * 0.58;
+        if (scrollFrac > 0.02) {
+          const grad = ctx.createLinearGradient(sx, sy, cubeX, cubeY);
+          grad.addColorStop(0, 'rgba(79,142,255,0)');
+          grad.addColorStop(1, `rgba(79,142,255,${Math.min(0.12, scrollFrac * 0.15).toFixed(3)})`);
+          ctx.beginPath(); ctx.setLineDash([4, 8]);
+          ctx.moveTo(sx, sy); ctx.lineTo(cubeX, cubeY);
+          ctx.strokeStyle = grad; ctx.lineWidth = 1; ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+
+</html>
