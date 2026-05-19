@@ -412,9 +412,9 @@
   <canvas id="cube-canvas"></canvas>
 
   <nav>
-    <a href="alphin_portfolio.html">About</a>
-    <a href="alphin_projects.html">Projects</a>
-    <a href="#" class="active">Experience</a>
+    <a href="hero.html">About</a>
+    <a href="project.html">Projects</a>
+    <a href="experience.html" class="active">Experience</a>
     <a href="#">Contact</a>
   </nav>
 
@@ -428,7 +428,7 @@
 
     <div class="timeline">
 
-      <!-- ENTRY 1 — card on RIGHT, cube starts in LEFT free space -->
+      <!-- ENTRY 1 — card on LEFT (odd entries use padding-right, so card is on left half) -->
       <div class="entry">
         <div class="entry-date">June 2025 — Dec 2025</div>
         <div class="glass-card">
@@ -455,7 +455,7 @@
         </div>
       </div>
 
-      <!-- ENTRY 2 — card on LEFT, cube moves to RIGHT free space -->
+      <!-- ENTRY 2 — card on RIGHT -->
       <div class="entry">
         <div class="entry-date">Jan 2026 — April 2026</div>
         <div class="glass-card">
@@ -484,8 +484,8 @@
 
       <!--
       TO ADD MORE ENTRIES — just paste below and alternate:
-      Odd entries (1st, 3rd, 5th…) → card on RIGHT, free space on LEFT
-      Even entries (2nd, 4th, 6th…) → card on LEFT, free space on RIGHT
+      Odd entries (1st, 3rd, 5th…) → card on LEFT, cube in RIGHT free space
+      Even entries (2nd, 4th, 6th…) → card on RIGHT, cube in LEFT free space
       The cube trajectory auto-extends to fill each new free zone.
 
       <div class="entry">
@@ -588,7 +588,7 @@
       const PARTS = Array.from({ length: 30 }, () => ({
         theta: Math.random() * Math.PI * 2,
         phi: Math.random() * Math.PI,
-        r: 90 + Math.random() * 60,
+        r: 110 + Math.random() * 70,
         speed: (0.2 + Math.random() * 0.4) * (Math.random() < 0.5 ? 1 : -1),
         size: 0.8 + Math.random() * 1.4,
         phase: Math.random() * Math.PI * 2
@@ -605,10 +605,11 @@
         const ef = easeInOut(scrollFrac);
 
         // Cube world position:
-        // Start: upper-left free space (~22% from left, ~42% from top)
-        // End:   lower-right free space (~78% from left, ~62% from top)
-        const cubeX = lerp(W * 0.22, W * 0.78, ef);
-        const cubeY = lerp(H * 0.42, H * 0.58, ef)
+        // Entry 1 card is on the LEFT → cube starts in the RIGHT free space (~78% from left)
+        // Entry 2 card is on the RIGHT → cube ends in the LEFT free space (~22% from left)
+        // So the cube travels: upper-right → lower-left as you scroll down
+        const cubeX = lerp(W * 0.78, W * 0.22, ef);
+        const cubeY = lerp(H * 0.40, H * 0.62, ef)
           + Math.sin(t * 0.7) * 14; // gentle float
 
         // Rotation — speeds up slightly mid-scroll
@@ -617,7 +618,7 @@
         const ry = t * 0.55 * rotSpeed;
         const rz = t * 0.15;
 
-        const SIZE = 58; // half-size of cube in px
+        const SIZE = 82; // increased from 58 → bigger cube
 
         // Project all vertices
         const verts = BASE_VERTS.map(v => {
@@ -694,9 +695,8 @@
         });
 
         // ── Trail line showing cube's journey path ──
-        // Faint dashed line from start position to current position
-        const sx = W * 0.22, sy = H * 0.42;
-        const ex = W * 0.78, ey = H * 0.58;
+        // Faint dashed line from start position (upper-right) to current position
+        const sx = W * 0.78, sy = H * 0.40;
         if (scrollFrac > 0.02) {
           const grad = ctx.createLinearGradient(sx, sy, cubeX, cubeY);
           grad.addColorStop(0, 'rgba(79,142,255,0)');
