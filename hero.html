@@ -7,6 +7,7 @@
   <title>Alphin — Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="nav.css">
   <style>
     * {
       margin: 0;
@@ -61,69 +62,6 @@
       width: 100%;
       height: 100%;
       z-index: 0
-    }
-
-    /* CENTERED GLASSY NAV */
-    /* REVISED HIGH-TECH MINIMAL NAV */
-    nav {
-      position: fixed;
-      top: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      background: rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      /* Single, crisp, ultra-faint cosmic blue border */
-      border: 1px solid rgba(79, 142, 255, 0.15);
-      border-radius: 100px;
-    }
-
-    nav a {
-      color: rgba(255, 255, 255, 0.45);
-      text-decoration: none;
-      font-size: 10px;
-      /* Slightly scaled down for elegance */
-      font-weight: 500;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      padding: 8px 18px;
-      border-radius: 100px;
-      position: relative;
-      transition: color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      white-space: nowrap;
-    }
-
-    /* Smooth color transition instead of a solid pill background on hover */
-    nav a:hover {
-      color: rgba(255, 255, 255, 0.95);
-    }
-
-    /* Clean, glowing dot indicator or soft text shadow for the active tab */
-    nav a.active {
-      color: #fff;
-      background: transparent;
-      /* Removed the heavy bounding box */
-      border: none;
-      text-shadow: 0 0 15px rgba(79, 142, 255, 0.85);
-    }
-
-    /* Optional: Elegant interactive dot underneath the active link */
-    nav a.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 4px;
-      background: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent);
     }
 
     /* HERO */
@@ -276,17 +214,6 @@
     }
 
     @media(max-width:600px) {
-      nav {
-        gap: 2px;
-        padding: 6px 8px
-      }
-
-      nav a {
-        font-size: 10px;
-        padding: 7px 12px;
-        letter-spacing: 1px
-      }
-
       .hero-cta {
         flex-direction: column;
         align-items: center
@@ -301,7 +228,7 @@
   <div id="cursor-ring"></div>
   <canvas id="bg-canvas"></canvas>
 
-  <nav>
+  <nav class="site-nav">
     <a href="hero.html" class="active">About</a>
     <a href="project.html">Projects</a>
     <a href="experience.html">Experience</a>

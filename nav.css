@@ -1,0 +1,81 @@
+/* Shared glass navigation — cosmic blue / dark theme */
+:root {
+  --nav-accent: #4F8EFF;
+  --nav-glass-bg: rgba(0, 0, 0, 0.35);
+  --nav-glass-border: rgba(79, 142, 255, 0.18);
+  --nav-glass-highlight: rgba(79, 142, 255, 0.06);
+}
+
+.site-nav {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--nav-glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--nav-glass-border);
+  border-radius: 100px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 20px var(--nav-glass-highlight);
+}
+
+.site-nav a {
+  color: rgba(255, 255, 255, 0.42);
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  border-radius: 100px;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.site-nav a:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.site-nav a.active {
+  color: #fff;
+  text-shadow: 0 0 14px rgba(79, 142, 255, 0.9);
+}
+
+.site-nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--nav-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--nav-accent), 0 0 20px rgba(79, 142, 255, 0.5);
+}
+
+@media (max-width: 600px) {
+  .site-nav {
+    top: 20px;
+    gap: 2px;
+    padding: 5px 8px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .site-nav a {
+    font-size: 9px;
+    padding: 8px 11px;
+    letter-spacing: 1.5px;
+  }
+}
